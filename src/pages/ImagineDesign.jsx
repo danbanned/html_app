@@ -15,6 +15,7 @@ export default function ImagineDesign() {
     const description = prompt("Description") || "";
     const coverImage = prompt("Cover image URL (optional)") || "";
     const coverColor = prompt("Cover color (optional)") || "#4a90e2"; // default blue
+    
 
     const newBook = {
       id: Date.now(),
