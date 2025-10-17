@@ -1,0 +1,12 @@
+graph TD
+    A[User] -->|Clicks on StoryBoard| B[StoryBoard Main Page]
+    B -->|Navigate| C[ImagineDesign Subpage]
+    C -->|Load Books| D[BookMaker Component]
+    C -->|Add/Edit Book| E[AddBookPanel Overlay]
+    D -->|Update Books| F[useState & setBooks]
+    E -->|Submit Book| F
+    F -->|Persist| G[localStorage: imagine_books_v1]
+    B -->|Navigate| H[Planned Roles Page]
+    B -->|Navigate| I[Planned Traits & Relates Page]
+    D -->|Click Edit/Delete| E
+    F -->|Rerender| D

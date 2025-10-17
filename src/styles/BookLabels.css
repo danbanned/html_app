@@ -1,0 +1,21 @@
+.tag {
+  display: inline-block;
+  padding: 2px 6px;
+  margin: 2px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: white;
+}
+.tag-characters { background-color: #e67e22; }
+.tag-scenes { background-color: #3498db; }
+.tag-setting { background-color: #2ecc71; }
+.tag-time { background-color: #9b59b6; }
+.tag-mood { background-color: #f1c40f; color: #333; }
+.tag-connections { background-color: #e74c3c; }
+
+.highlight-character {
+  background-color: rgba(255, 165, 0, 0.3);
+  font-weight: bold;
+  border-radius: 4px;
+  padding: 1px 3px;
+}

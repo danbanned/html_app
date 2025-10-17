@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import ImagineDesign from "./pages/ImagineDesign.jsx";
-import StoryBoard from "./pages/StoryBoard.jsx";
+import StoryBoard from "./pages/Vi-Story.jsx";
+import "./styles/Navigation.css";
 
 export default function MainPage() {
   return (
