@@ -205,7 +205,7 @@ Conditional Panel for Adding/Editing Books
       onAddBook={handleAddOrUpdateBook}
       onClose={closeAddPanel}
     />
-  )}
+  ));
 </AnimatePresence>
 
 

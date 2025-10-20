@@ -77,7 +77,7 @@ But it keeps having issues </p>
       {/* === RIGHT SIDE PANEL === */}
       <div className="panel">
         <h1>Vi Story</h1>
-        <button onClick={Submittitle}> What can I do for you </button>
+        <button> What can I do for you </button>
 
         {/* Cards for features */}
         <div className="card-grid">
@@ -122,10 +122,6 @@ But it keeps having issues </p>
 
         {/* Lower interactive cards */}
         <ul className="card-grid">
-          <li><button className="MStorycardM"onClick={Panelsubmit}>Make your Story</button></li>
-          <li><button className="MCharactercardM"onClick={Panelsubmit}>Make your Character</button></li>
-          <li><button className="MScenescardM"onClick={Panelsubmit}>Make your Scenes</button></li>
-          <li><button className="MSettingscardM"onClick={Panelsubmit}>Make your Settings</button></li>
         </ul>
       </div>
     <div className="body">
