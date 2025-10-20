@@ -145,6 +145,7 @@ export default function AddBookPanel({ existingBook = null, slotIndex, onAddBook
   return (
     <motion.div className="addbook-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <motion.div className="addbook-panel" initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 20 }}>
+        <div className="twinkle"></div>
         <h2>{existingBook ? "Edit Book 📚" : "Add a New Book 📚"}</h2>
 
         {/* Basic Fields */}

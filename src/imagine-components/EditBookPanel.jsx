@@ -193,6 +193,7 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
         transition={{ type: "spring", damping: 20 }}
       >
         <h2>Edit Book 📚</h2>
+        <div className="twinkle"></div>
 
         {/* --- BASIC FIELDS --- */}
         <div className="field">

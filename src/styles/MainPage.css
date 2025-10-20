@@ -34,13 +34,13 @@
 
 /* Foreground layer (faster scroll) */
 .container-bg1 {
-  background-image: url("/Users/Admin/chatgpt/my-app/src/assets/Homepage.png");
+  background-image: url("/Homepage.png");
   animation: scroll1 20s linear infinite;
 }
 
 /* Background layer (slower scroll) */
 .container-bg2 {
-  background-image: url("/Users/Admin/chatgpt/my-app/src/assets/Homepage.png");
+  background-image: url("/Homepage.png");
   opacity: 0.7;
   animation: scroll2 60s linear infinite;
 }
