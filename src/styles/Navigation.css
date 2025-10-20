@@ -1,0 +1,59 @@
+/* Navigation.css */
+
+/* Floating top nav */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg, #000000, #5ac8e0); /* purple to blue */
+  padding: 12px 24px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  z-index: 1000; /* keep above other content */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 0 0 12px 12px;
+  font-family: 'Arial', sans-serif;
+  transition: all 0.3s ease;
+}
+
+/* Link styles */
+nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+/* Hover / focus effect */
+nav a:hover,
+nav a:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Active link styling (if you switch to NavLink) */
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Add spacing for page content so it doesn't hide behind nav */
+body {
+  padding-top: 70px; /* adjust based on nav height */
+}
+
+/* Responsive design for small screens */
+@media (max-width: 600px) {
+  nav {
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+}
+

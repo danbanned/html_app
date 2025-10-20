@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import "../styles/AddBookPanel.css"; // Reuse AddBookPanel styling
+import { useChatCompletion } from "../hooks/useChatCompletion";
+
+
 
 export default function EditBookPanel({ book, onUpdateBook, onClose }) {
+
   if (!book) return null; // safety guard
 
   // Prefill existing book data
@@ -12,6 +16,7 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
   const [description, setDescription] = useState(book.description || "");
   const [coverImage, setCoverImage] = useState(book.coverImage || "");
   const [coverColor, setCoverColor] = useState(book.coverColor || "#4a90e2");
+  const chat = useChatCompletion();
 
   const [tags, setTags] = useState(
     book.tags || {
@@ -24,8 +29,12 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
     }
   );
 
+
   const [currentCategory, setCurrentCategory] = useState("characters");
   const [currentTag, setCurrentTag] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  
+
 
   const TITLE_LIMIT = 20;
   const AUTHOR_LIMIT = 15;
@@ -34,9 +43,18 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
   // 🎨 Generate consistent pastel color from tag text
   const generateTagColor = (tagName) => {
     let hash = 0;
-    for (let i = 0; i < tagName.length; i++)
-      hash = tagName.charCodeAt(i) + ((hash << 5) - hash);
+    for (let letter = 0; letter < tagName.length; letter++)
+        //since its a for loop[ letter is the index of each letter
+        //add 1 to letter each time its less than the string length 
+      hash = tagName.charCodeAt(letter) + ((hash << 5) - hash);
+      //charCodeAt gets the unicode number of each letter,  adds it to hash which starts at 0, 
+      // the binary code of 5 shifts all the binary bits of hash to the left by 5 spaces
+      //and multiplys by 2 each time it shifts getting 32 we multiply that number by hash
+      // and multiplying hash by 32 then subtract by hash, and for each time we do that hash,
+      // is a different value 
     const hue = Math.abs(hash) % 360;
+    //make sure the number is positive and divide it by 360 and keep the remainder
+    // to make the hue value in range of 0 - 360 hsl protocol
     return `hsl(${hue}, 70%, 75%)`;
   };
 
@@ -54,27 +72,74 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
     if (!currentTag.trim()) return;
     const color = generateTagColor(currentTag.trim());
     const newTag = { name: currentTag.trim(), color };
+
     setTags((prev) => ({
-      ...prev,
-      [currentCategory]: [...prev[currentCategory], newTag],
-    }));
+  ...prev,
+  [currentCategory]: [...(prev[currentCategory] || []), newTag],
+}));
+
     setCurrentTag("");
   };
 
   // ❌ Remove a tag
   const removeTag = (category, tagName) => {
     setTags((prev) => ({
-      ...prev,
+      ...prev,//keeps all exisiting catigories 
       [category]: prev[category].filter((t) => t.name !== tagName),
+      //use catogory as a key/ filter creates a new array that only holds catogory tags 
+      //that dont = tagname/ we seperate the the tagname 
+      //so we extarct whatw\ever ctiogry matches tagname and this is how we remove it 
     }));
   };
 
-  // 💾 Save edited book
-  const handleSubmit = () => {
+  // 🧠 AI Integration: generate suggestions for description and tags
+  const handleAIAssist = async () => {
+    if (!title && !genre && !description) {
+      alert("Please add at least a title or genre before using AI assist.");
+      return;
+      //make sure these fielsd are filled be ]for making suggestions, if not return 
+    }
+
+ setIsGenerating(true);
+    try {
+      // ✅ Real AI call (using your backend API)
+      const payload = {
+        messages: [
+          { role: "system", content: "You are a creative story assistant." },
+          {
+            role: "user",
+            content: `Generate a short book summary and relevant tags for a ${genre} story titled "${title}". Current description: ${description}`,
+          },
+        ],
+      };
+      const result = await chat.mutateAsync(payload);
+      // The backend should return { reply, tags?, description? }
+      const aiResponse = result.reply;
+
+      if (aiResponse.description) setDescription(aiResponse.description);
+      if (aiResponse.tags) setTags(aiResponse.tags);
+      //if we recieve value we add  it
+
+
+    } catch (error) {
+      console.error("AI generation failed:", error);
+      alert("⚠️ AI generation failed. Try again.");
+
+    } finally {
+      setIsGenerating(false);
+      //stop generating 
+    }
+  };
+
+  // Temporary placeholder for AI — replace with your real API call  
+
+  // 💾 Save edited book actually updates uit
+  const Submitmybookafteriaddanewoneoreditone = () => {
     if (!title.trim()) return alert("⚠️ Please enter a title!");
     if (!author.trim()) return alert("⚠️ Please enter an author name!");
     if (!genre.trim()) return alert("⚠️ Please enter a genre!");
 
+    //overewrites all the old books 
     const updatedBook = {
       ...book,
       title,
@@ -92,6 +157,7 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
 
   // Sync fields when switching between books
   useEffect(() => {
+    //check to see if these valuse were updated 
     setTitle(book.title || "");
     setAuthor(book.author || "");
     setGenre(book.genre || "");
@@ -99,6 +165,7 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
     setCoverImage(book.coverImage || "");
     setCoverColor(book.coverColor || "#4a90e2");
     setTags(
+        //check to see if the values tages were updated 
       book.tags || {
         characters: [],
         scenes: [],
@@ -108,6 +175,7 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
         connections: [],
       }
     );
+
   }, [book]);
 
   return (
@@ -194,16 +262,30 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
 
           <div className="tag-display">
             {Object.entries(tags).map(([category, list]) => (
-              <div key={category} className="tag-category">
+                //takes tags turns it into a dictionairy with kays and values 
+                //then map loops through them catagory is a key and its value is a list
+                //tags is a object with properties and those properties have lists
+              <div key={category} className="tag-category"
+              //then key gets assigned the catogry like characters ect
+              >
                 <strong>{category.toUpperCase()}:</strong>
-                <div className="tag-list">
+                
+                <div className="tag-list"
+                //Strong just bolds text we turn all the catogries to uppercase 
+                >
                   {list.map((tag) => (
+                    //list is the list thats accociated with catogories, we look thorugh those list
+                    //to get the tags the catogory has 
                     <span
                       key={tag.name}
+                      //then we get every tag name
                       className="tag-item"
                       style={{ backgroundColor: tag.color }}
-                    >
-                      {tag.name}
+                      //style translate to css. backgroundColor is an actual css property 
+                      //tag.color is a string that we defined 
+                      //the line below just displays the tag for the user to see 
+                    >{tag.name }
+
                       <button onClick={() => removeTag(category, tag.name)}>×</button>
                     </span>
                   ))}
@@ -236,10 +318,12 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
 
         {/* --- ACTION BUTTONS --- */}
         <div className="buttons">
-          <button onClick={handleSubmit}>Save Changes</button>
-          <button className="cancel" onClick={onClose}>
-            Cancel
+          <button onClick={Submitmybookafteriaddanewoneoreditone}>Save Changes</button>
+          <button className="cancel" onClick={onClose}>cancel</button>
+            <button onClick={handleAIAssist} disabled={isGenerating} className="ai-button">
+            {isGenerating ? "✨ Generating..." : "🤖 AI Assist"}
           </button>
+    
         </div>
       </motion.div>
     </motion.div>

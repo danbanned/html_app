@@ -272,3 +272,125 @@ An interactive React app for visualizing and organizing storybooks, characters, 
 - Host via Vercel or GitHub Pages
 
 >>>>>>> 16d59d2 (Save work before fixing detached HEAD)
+Ai integration proccess
+
+// src/ai/useAI.js
+import { useState, useCallback } from "react";
+
+/**
+ * useAI Hook
+ * Provides a simple interface to call AI tasks in the app.
+ * Currently mock-ready for testing offline.
+ */
+export function useAI() {
+  const [aiResponse, setAIResponse] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  /**
+   * callAI
+   * @param {Object} options
+   * @param {string} options.context - The input text or context
+   * @param {string} options.task - The type of task (e.g., "expand chapter", "summarize", "tag", "suggest title")
+   */
+  const callAI = useCallback(async ({ context, task }) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Mock AI response
+      let result;
+      switch (task) {
+        case "expand chapter":
+          result = context + " ...and the story unfolds further, revealing hidden secrets.";
+          break;
+        case "summarize":
+          result = "This is a concise summary of the provided story.";
+          break;
+        case "tag":
+          result = ["mystery", "friendship", "adventure"];
+          break;
+        case "suggest title":
+          result = "The Echoes of Tomorrow";
+          break;
+        default:
+          result = context;
+          break;
+      }
+
+      // Simulate network delay
+      await new Promise((res) => setTimeout(res, 500));
+
+      setAIResponse(result);
+      return result;
+    } catch (err) {
+      console.error("AI call failed:", err);
+      setError(err);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return { callAI, aiResponse, isLoading, error };
+}
+// src/ai/useAI.js
+import { useState, useCallback } from "react";
+
+/**
+ * useAI Hook
+ * Provides a simple interface to call AI tasks in the app.
+ * Currently mock-ready for testing offline.
+ */
+export function useAI() {
+  const [aiResponse, setAIResponse] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  /**
+   * callAI
+   * @param {Object} options
+   * @param {string} options.context - The input text or context
+   * @param {string} options.task - The type of task (e.g., "expand chapter", "summarize", "tag", "suggest title")
+   */
+  const callAI = useCallback(async ({ context, task }) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Mock AI response
+      let result;
+      switch (task) {
+        case "expand chapter":
+          result = context + " ...and the story unfolds further, revealing hidden secrets.";
+          break;
+        case "summarize":
+          result = "This is a concise summary of the provided story.";
+          break;
+        case "tag":
+          result = ["mystery", "friendship", "adventure"];
+          break;
+        case "suggest title":
+          result = "The Echoes of Tomorrow";
+          break;
+        default:
+          result = context;
+          break;
+      }
+
+      // Simulate network delay
+      await new Promise((res) => setTimeout(res, 500));
+
+      setAIResponse(result);
+      return result;
+    } catch (err) {
+      console.error("AI call failed:", err);
+      setError(err);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return { callAI, aiResponse, isLoading, error };
+}
