@@ -5,6 +5,7 @@ import BookMaker from "../imagine-components/BookMaker.jsx";
 import AddBookPanel from "../imagine-components/AddBookPanel.jsx";
 import "../styles/BookMaker.css";
 
+
 export default function ImagineDesign() {
   const SLOTS = 20; // how many empty outlines you want
   // Load from localStorage -> fallback to SLOTS nulls

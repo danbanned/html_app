@@ -2,7 +2,7 @@ body {
   margin: 0;
   font-family: "Poppins", sans-serif;
   color: #824d4d;
-  background-image: url(/Users/Admin/chatgpt/my-app/src/assets/dreamworld.png) ;
+  background-image: url(src/assets/dreamworld.png) ;
   animation: scroll1 100s linear infinite;
   background-size:auto;
   background-repeat: repeat-x;
