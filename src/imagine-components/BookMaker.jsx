@@ -136,7 +136,14 @@ function BookReader({ book, onClose, onStartReading }) {
         {book.tags && (
           <div className="tag-section">
             {Object.entries(book.tags).map(([category, list]) =>
+            //uses object entry which turns a object into a list
+            //loops through book tags
               list.length > 0 && (
+                //checks to see if the tags exceed 0 and returns
+                //1. key has its own catory foir every item 
+                //2. that catogory/tag gets turned uppercase 
+                //3. we loop through the list of [tags] of said [catagory]
+                //4 give them nice backgrounds 
                 <div key={category} className="tag-block">
                   <h5>{category.toUpperCase()}</h5>
                   <div className="tag-bubbles">
@@ -165,6 +172,7 @@ export default function BookMaker({ books, setBooks }) {
   const [editingBook, setEditingBook] = useState(null);
 
   // Load books from localStorage
+  //useeffcect constantly keeps it updated 
   useEffect(() => {
     const savedBooks = localStorage.getItem("imagine_books_v1");
     if (savedBooks) setBooks(JSON.parse(savedBooks));
@@ -172,6 +180,8 @@ export default function BookMaker({ books, setBooks }) {
 
   // Save book (for editing in ReadYourBook)
   const handleSaveBook = (updatedBook) => {
+    //handlesavebook is our function call while updatedbook saves the data \
+    //it returns setbooks, 
     setBooks((prev) => {
       const newBooks = prev.map((b) => (b && b.id === updatedBook.id ? updatedBook : b));
       localStorage.setItem("imagine_books_v1", JSON.stringify(newBooks));
@@ -209,10 +219,20 @@ export default function BookMaker({ books, setBooks }) {
     setReadingBook(newBook);
   };
 
+//everything under are your function calls
+// they are conditioned by ? which checks to see if the function exist 
+//befor callinng
+//they all have there own functions/button calls
+//and classnames 
+//Only one of these components is rendered at a time.
+//Each one only runs if its required data exists.
+//so each of these check to see if 
+
   return (
     <div className="bookmaker-container">
       <AnimatePresence mode="wait">
         {readingBook ? (
+          
           <ReadYourBook
             key={readingBook.id}
             book={readingBook}
@@ -221,11 +241,13 @@ export default function BookMaker({ books, setBooks }) {
             onSaveBook={handleSaveBook}
           />
         ) : activeBook ? (
+          //leads our uses to the page when they first click on a book 
+          //from all 9000 of the other books 
           <BookReader
-            key={activeBook.id}
-            book={activeBook}
-            onClose={() => setActiveBook(null)}
-            onStartReading={(book) => setReadingBook(book)}
+            key={activeBook.id}// looks for actuvebook id 
+            book={activeBook} //the current book 
+            onClose={() => setActiveBook(null)} //closes book
+            onStartReading={(book) => setReadingBook(book)} //redirects users to the inside of there book
           />
         ) : (
           <BookShelf
@@ -237,16 +259,26 @@ export default function BookMaker({ books, setBooks }) {
             onDelete={handleDeleteBook}
           />
         )
+        
+        
         }
         
       </AnimatePresence>
       
       <AnimatePresence>
-        {editingBook && (
+      
+        {editingBook && (//the lines below is where EditBookPanel gets its prefilled data
+          //  const [editingBook, setEditingBook] = useState(null);
+          //check to see if editingBook is true and returns evrything
+          //seteditingbook is our updated version
+          //&& conditional
+          //else 
           <EditBookPanel
             book={editingBook}
             onUpdateBook={handleSaveBook}
             onClose={() => setEditingBook(null)}
+            //we are sending this 
+            // information directly to our editbookpanel 
           />
         )}
       </AnimatePresence>
