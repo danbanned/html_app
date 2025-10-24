@@ -6,7 +6,8 @@ export function useChatCompletion() {
     mutationFn: async (payload) => {
       // payload: { messages: [{role, content}], bookContext?: {} }
       const response = await fetch("http://localhost:5000/api/chat", {
-        //our backend server 
+        //our backend server or chatrouter
+        
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

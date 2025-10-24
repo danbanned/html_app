@@ -22,14 +22,18 @@ export default function AddBookPanel({ existingBook = null, slotIndex, onAddBook
 
   const [currentCategory, setCurrentCategory] = useState("characters");
   const [currentTag, setCurrentTag] = useState("");
-
   const [isGenerating, setIsGenerating] = useState(false);
+
+
 
   const TITLE_LIMIT = 20;
   const AUTHOR_LIMIT = 15;
   const GENRE_LIMIT = 12;
 
   // Generate consistent pastel color from text
+
+  // ✅ Safely handle undefined tags
+  
   const generateTagColor = (tagName) => {
     let hash = 0;
     for (let i = 0; i < tagName.length; i++) hash = tagName.charCodeAt(i) + ((hash << 5) - hash);
@@ -62,47 +66,54 @@ export default function AddBookPanel({ existingBook = null, slotIndex, onAddBook
       [category]: prev[category].filter((t) => t.name !== tagName),
     }));
   };
-
   // 🧠 AI Integration: generate suggestions for description and tags
   const handleAIAssist = async () => {
+
     if (!title && !genre && !description) {
       alert("Please add at least a title or genre before using AI assist.");
       return;
     }
 
     setIsGenerating(true);
+    
+
     try {
-      // --- mock AI call (replace with your actual integration later)
-      const aiResponse = await fakeAIResponse({
-        title,
-        genre,
-        description,
-      });
+      const { mutateAsync } = chat;
+      if (!mutateAsync) throw new Error("Chat API not initialized");
 
-      if (aiResponse.description) setDescription(aiResponse.description);
-      if (aiResponse.tags) setTags(aiResponse.tags);
+      const payload = {
+        bookContext: {
+          title: book?.title || title || "Untitled Book",
+          genre: book?.genre || genre || "Fantasy",
+          author: book?.author || author || "Unknown Author",
+          description: description || "",
+        },
+        messages: [
+          {
+            role: "user",
+            content: `Write a creative description and generate tags for "${book?.title || title}".`,
+          },
+        ],
+      };
 
-      alert("✨ AI has added suggestions!");
-    } catch (error) {
-      console.error("AI generation failed:", error);
-      alert("⚠️ AI generation failed. Try again.");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+      const data = await mutateAsync(payload);
+          console.log("✅ AI response:", data.tags);
 
-  // Temporary placeholder for AI — replace with your real API call
-  const fakeAIResponse = async ({ title, genre }) => {
-    await new Promise((res) => setTimeout(res, 1500)); // simulate delay
-    return {
-      description: `A thrilling ${genre} story about "${title}" that explores imagination and mystery.`,
-      tags: {
-        ...tags,
-        mood: [...tags.mood, { name: "mystical", color: generateTagColor("mystical") }],
-        scenes: [...tags.scenes, { name: "intro", color: generateTagColor("intro") }],
-      },
-    };
-  };
+          if (data.description) setDescription(data.description);
+
+          if (data.tags) {
+
+            // Go through AI tags and use addTag for each one
+            setTags(data.tags)
+            console.log(tags)
+          }
+        } catch (err) {
+          console.error("❌ AI generation failed:", err);
+          alert("AI generation failed. Check server logs.");
+        } finally {
+          setIsGenerating(false);
+        }
+      };
 
   const handleSubmit = () => {
     if (!title.trim()) return alert("⚠️ Please enter a title!");
@@ -142,11 +153,17 @@ export default function AddBookPanel({ existingBook = null, slotIndex, onAddBook
     });
   }, [existingBook]);
 
+
+
+
   return (
+
     <motion.div className="addbook-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <motion.div className="addbook-panel" initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 20 }}>
         <div className="twinkle"></div>
-        <h2>{existingBook ? "Edit Book 📚" : "Add a New Book 📚"}</h2>
+        <h2>{existingBook ? "Edit Book 📚" : "Add a New Book 📚"}
+        </h2>
+
 
         {/* Basic Fields */}
         <div className="field">
@@ -224,9 +241,8 @@ export default function AddBookPanel({ existingBook = null, slotIndex, onAddBook
         <div className="buttons">
           <button onClick={handleSubmit}>{existingBook ? "Save Changes" : "Add Book"}</button>
           <button onClick={onClose} className="cancel">Cancel</button>
-          <button onClick={handleAIAssist} disabled={isGenerating} className="ai-button">
-            {isGenerating ? "✨ Generating..." : "🤖 AI Assist"}
-          </button>
+          <button className="edit-btn" onClick={handleAIAssist}></button>
+          
         </div>
       </motion.div>
     </motion.div>

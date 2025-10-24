@@ -1,59 +1,102 @@
-/* Navigation.css */
+/* Navigation.css — robust dark navbar + safe page spacing */
 
-/* Floating top nav */
-nav {
+.navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(90deg, #000000, #5ac8e0); /* purple to blue */
-  padding: 12px 24px;
+  height: 60px;
+  background: rgba(12,12,12,0.95);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  z-index: 1000; /* keep above other content */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border-radius: 0 0 12px 12px;
-  font-family: 'Arial', sans-serif;
-  transition: all 0.3s ease;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 1100;
+  box-sizing: border-box;
 }
 
-/* Link styles */
-nav a {
-  color: #ffffff;
+/* logo */
+.nav-logo {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #f5f5f5;
+  white-space: nowrap; /* don't break the brand */
+  margin-right: 12px;
+}
+
+/* links container */
+.nav-links {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: nowrap;            /* prefer single-line */
+  min-width: 0;                /* allow children to shrink properly */
+}
+
+/* each link */
+.nav-link {
+  color: #d9d9d9;
   text-decoration: none;
-  font-weight: 600;
-  padding: 10px 16px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 8px 10px;
+  border-radius: 6px;
+  transition: color .18s ease, transform .12s ease, background .12s;
+  white-space: nowrap;
 }
 
-/* Hover / focus effect */
-nav a:hover,
-nav a:focus {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+/* hover */
+.nav-link:hover {
+  color: #00bfff;
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.02);
 }
 
-/* Active link styling (if you switch to NavLink) */
-nav a.active {
-  background-color: rgba(255, 255, 255, 0.4);
-  color: #fff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+/* when there are more links than room, allow horizontal scrolling */
+.nav-links-scroll {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding-bottom: 4px;
+  min-width: 0; /* important for flex children shrink */
 }
 
-/* Add spacing for page content so it doesn't hide behind nav */
-body {
-  padding-top: 70px; /* adjust based on nav height */
+/* ensure content below navbar never gets hidden */
+:root {
+  --navbar-height: 60px;
 }
 
-/* Responsive design for small screens */
-@media (max-width: 600px) {
-  nav {
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
+/* apply safe top padding to the main app container(s) that hold content */
+#root,
+main,
+.page,
+.container {
+  box-sizing: border-box;
+  padding-top: var(--navbar-height); /* ensures content starts below fixed nav */
+}
+
+/* Responsive: small screens */
+@media (max-width: 720px) {
+  .nav-links {
+    display: none; /* hide normal links on small screens */
+  }
+
+  /* show a horizontally-scrollable quick bar instead (keeps things simple) */
+  .nav-links-scroll {
+    display: flex;
+  }
+
+  .navbar {
+    padding: 8px 12px;
+    height: auto;
+    gap: 8px;
+  }
+
+  .nav-logo {
+    margin-right: 10px;
   }
 }
-

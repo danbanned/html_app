@@ -211,7 +211,8 @@ textarea {
   background: rgba(255, 255, 255, 0.828);
 }
 
-/* Optional: visually separate section */
+/* Optional: visually separate section *//* Optional: visually separate section */
+
 .sidebar strong,
 .sidebar h2 {
   color: #58838a;

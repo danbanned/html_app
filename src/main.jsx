@@ -1,18 +1,26 @@
-import { createRoot } from 'react-dom/client';
-import MainPage from './Navigation.jsx';
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { createRoot } from "react-dom/client";
+import MainPage from "./Navigation.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AIProvider } from "../src/storyboard-component/AIContext.jsx";
+import {CategoryProvider} from "../src/components/CategoryContext.jsx"
 
-
+// Create the query client instance
 const queryClient = new QueryClient();
 
-// 🪄 Wrap your entire app in the provider
+// Get your app's root DOM element
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+// Render your app wrapped in both providers
+root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <MainPage />
+      <AIProvider>
+        <CategoryProvider>
+        <MainPage />
+        </CategoryProvider>
+      </AIProvider>
     </QueryClientProvider>
   </React.StrictMode>
 );

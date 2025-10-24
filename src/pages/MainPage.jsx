@@ -1,5 +1,5 @@
 import "../styles/MainPage.css";
-import { Submittitle, Panelsubmit } from "../components/FormForbOOKS.jsx";
+import { Submittitle, Panelsubmit } from "../components/FormForbOOKS";
 import { useNavigate } from "react-router-dom";
 
 
@@ -28,16 +28,16 @@ export default function StoryBoard() {
         </div>
 
         {/* StoryBoarding Section */}
-        <div className="boxstoryboard">
-          <h2>StoryBoarding</h2>
-          <ul>
-            <button className="step1">Step 1</button>
-            <button className="step2" >Step 2</button>
-            <button className="step3">Steps 3, 4, 5, 6</button>
-            <button id="topstep"></button>
-          </ul>
-         
-        </div>
+          <div className="boxstoryboard">
+            <h2 classname="boxstoryboard" onClick={() => navigation("/storyboardpage")}>StoryBoarding</h2>
+            <p>"Plan, visualize, and bring your story to life scene by scene."</p>
+            <ul>
+              <button className="step1">Step 1</button>
+              <button className="step2">Step 2</button>
+              <button className="step3">Steps 3, 4, 5, 6</button>
+              <button id="topstep"></button>
+            </ul>
+          </div>
 
         {/* Imagine Design Section */}
         <div className="boximagine">
