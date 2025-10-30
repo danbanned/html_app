@@ -3,8 +3,8 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: rgba(30, 30, 30, 0.95);
-  border: 1px solid #00bcd4;
+  background: rgba(34, 93, 10, 0.41);
+  border: 1px solid #051201;
   border-radius: 12px;
   padding: 16px;
   width: 240px;
@@ -17,7 +17,7 @@
 }
 
 .ai-helper input {
-  background: #111;
+  background: #b6beb6;
   color: white;
   border: none;
   padding: 8px;
@@ -25,7 +25,7 @@
 }
 
 .ai-helper button {
-  background: #00bcd4;
+  background: #19d400;
   border: none;
   padding: 8px;
   border-radius: 6px;

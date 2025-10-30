@@ -1,220 +1,187 @@
-body {
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  color: #824d4d;
-  background-image: url(/dreamworld.png) ;
-  animation: scroll1 100s linear infinite;
-  background-size:auto;
-  background-repeat: repeat-x;
+/* ImagineDesignNew.css */
 
 
-}
-@keyframes scroll1 {
-  from { background-position: 0 0; }
-  to { background-position: -2000px 0; }
-}
 
-
-.imagine-container {
-  display: flex;
-  height: 100vh;
-  background-color: #00000019;
+body{
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(16, 65, 135, 0.217),
+      rgba(1, 0, 40, 0.255)
+    ),
+    url('/public/dreamworld.png'); /* adjust path as needed */
+  background-size: cover;            /* keep cover */
+  background-repeat: repeat-y;       /* allow vertical tiling if needed */
+  background-position: center 0;
+  /* animate background-position from top to bottom */
+  animation: bgPan 40s linear infinite;
 }
 
-/* Sidebar Styling */
-.sidebar {
+/* keyframes move the background-position vertically */
+@keyframes bgPan {
+  0%   { background-position: center 0%; }
+  100% { background-position: center 100%; }
+}
+.container {
+  display: flex; /* key fix: makes sidebar and main content side by side */
+  min-height: 100vh;
+  width: 100%;
   position: relative;
-  z-index: 3;
-  width: 250px;
-  padding: 20px;
-  background: rgba(215, 31, 31, 0.08);
-  backdrop-filter: blur(2px);
-  border-right: 2px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.4);
-;
+  color: var(--text-light);
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: bgPan 25s ease-in-out infinite alternate;
+  font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
-.sidebar h2 {
-  margin-top: 0;
-  font-size: 1.4rem;
-  color: #38bad1;
+
+/* -------------------- Sidebar -------------------- */
+.sidebar {
+  width: 280px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+  position: relative;
 }
 
-.sidebar button {
-  background: #00d9ff;
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.sidebar-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.close-sidebar-btn {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #6b7280;
+  transition: color 0.2s ease;
+}
+
+.close-sidebar-btn:hover {
+  color: #111827;
+}
+
+/* -------------------- Sidebar Reopen Button -------------------- */
+.open-sidebar-btn {
+  position: fixed;         /* fixed makes it stay in place on scroll */
+  top: 50px;               /* push it below your navbar (adjust as needed) */
+  left: 0px;
+  z-index: 1000;           /* above most UI elements */
+  background: #000000;
+  color: #e00404;
   border: none;
   padding: 8px 12px;
-  margin: 10px 0;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.sidebar button:hover {
-  background: #272e2f;
+.open-sidebar-btn:hover {
+  background: #1e40af;
 }
 
-.image-list {
-  margin-top: 15px;
+/* -------------------- Slot Toolbar -------------------- */
+.slot-toolbar {
   display: flex;
-  flex-wrap: wrap;
-  gap: 100px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-.image-list img {
-  aspect-ratio: 9 / 16;
-  width: 100px;
-  border-radius: 10px;
-  object-fit: cover;
-  border: 2px solid #14afca;
-  transition: transform 0.3s;
-  gap: 3rem;
-  z-index: 0;
-}
-
-
-
-/* Main Content Styling */
-.main-content {
-  flex: 1;
-  padding: 40px;
-}
-
-.main-content h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-  color: #3192a3;
-}
-
-textarea {
-  width: 100%;
-  height: 120px;
-  border-radius: 12px;
+.addbookbutton {
+  background: #2563eb;
+  color: #fff;
   border: none;
-  padding: 15px;
-  font-size: 1rem;
-  resize: none;
-  background: rgba(255, 255, 255, 0.1);
-  color: #000000;
-  outline: none;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
-.notes-preview {
-  margin-top: 20px;
-  font-size: 1.1rem;
-  color: #ffda77;
-  animation: fadeIn 1s ease-in;
+.addbookbutton:hover {
+  background: #1e40af;
 }
 
-/* Fade-in Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-/* === SLOT GRID (Sidebar Book Buttons) === */
+/* -------------------- Slots -------------------- */
 .slot-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
-.slot-btn.full-cover {
+.slot-btn {
   position: relative;
-  width: 100%;
-  aspect-ratio: 3 / 4; /* book shape */
-  overflow: hidden;
-  border: none;
   border-radius: 10px;
+  aspect-ratio: 3/4;
+  overflow: hidden;
   cursor: pointer;
-  background: #0a0a0a;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.25);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.slot-btn.full-cover:hover {
-  transform: scale(1.04);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+.slot-btn:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
 }
 
 .slot-cover.full {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* makes it fill fully */
-  filter: brightness(0.9);
-  transition: filter 0.25s ease;
-}
-
-.slot-btn.full-cover:hover .slot-cover.full {
-  filter: brightness(1.1);
+  object-fit: cover;
 }
 
 .slot-overlay {
   position: absolute;
   bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  width: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
   color: #fff;
+  text-align: center;
   padding: 6px;
   font-size: 0.9rem;
-  text-align: center;
-}
-
-.add-text {
-  color: cyan;
-  font-weight: bold;
-  font-size: 1.2rem;
 }
 
 .no-cover {
   display: flex;
-  justify-content: center;
   align-items: center;
-  color: #888;
-  background: rgba(0, 255, 255, 0.1);
+  justify-content: center;
+  height: 100%;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+.add-text {
+  font-size: 1.2rem;
+  color: #6b7280;
+}
+
+/* -------------------- Main Content -------------------- */
+.main-content {
+  flex-grow: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Utility */
+.full-cover {
   width: 100%;
   height: 100%;
-  font-size: 0.9rem;
-}
-
-.slot-btn:hover {
-  background: rgba(0, 217, 255, 0.35);
-  transform: translateX(2px);
-}
-
-
-.slot-title {
-  flex: 1;
-  text-align: left;
-}
-
-
-/* Empty slot placeholder style */
-.slot-empty {
-  color: rgba(255, 255, 255, 0.4);
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 0.85rem;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.828);
-}
-
-/* Optional: visually separate section *//* Optional: visually separate section */
-
-.sidebar strong,
-.sidebar h2 {
-  color: #58838a;
-  margin-bottom: 0.5rem;
 }

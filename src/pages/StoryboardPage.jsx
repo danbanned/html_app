@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/StoryboardPage.css";
-import AIPanel from "../components/AIPanel.jsx";
 
 
 export default function StoryboardPage() {
@@ -14,6 +13,9 @@ export default function StoryboardPage() {
     { name: "Scene", key: "scene", icon: "🎬", desc: "Build your story’s key scenes" },
     { name: "Setting", key: "setting", icon: "🌄", desc: "Describe your story’s world or location" },
   ];
+
+
+  
 
   const renderSection = () => {
     switch (section) {
@@ -43,6 +45,26 @@ export default function StoryboardPage() {
     }
   };
 
+  useEffect(() => {
+  const container = document.querySelector(".storyboard-grid");
+  if (!container) return;
+
+  const handleMouseMove = (e) => {
+    const { innerWidth, innerHeight } = window;
+    const offsetX = (e.clientX / innerWidth - 0.5) * 20; // subtle horizontal tilt
+    const offsetY = (e.clientY / innerHeight - 0.5) * 20; // subtle vertical tilt
+
+    container.querySelectorAll(".storyboard-box").forEach((box, index) => {
+      const rotationX = offsetY * 0.5 + (index % 5) * 0.2;
+      const rotationY = -offsetX * 0.5 - (index % 5) * 0.2;
+      box.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+    });
+  };
+
+  window.addEventListener("mousemove", handleMouseMove);
+  return () => window.removeEventListener("mousemove", handleMouseMove);
+}, []);
+
   return (
     <div className="storyboard-container">
       <h1>Storyboard Creator</h1>
@@ -56,11 +78,14 @@ export default function StoryboardPage() {
         <p className="intro-text">Select a category to start building your story</p>
       )}
 
-      <div className="storyboard-content">{renderSection()}</div>
+      <div className="storyboard-content">{renderSection()}</div>'
+
+    
+      
+      
 
       
       {/* Floating AI panel */}
-      <AIPanel />
     </div>
   );
 }

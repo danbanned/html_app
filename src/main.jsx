@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AIProvider } from "../src/storyboard-component/AIContext.jsx";
 import {CategoryProvider} from "../src/components/CategoryContext.jsx"
 
+
 // Create the query client instance
 const queryClient = new QueryClient();
 

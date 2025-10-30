@@ -1,77 +1,138 @@
-// Import express to define routes
+// server/routes/chatRouter.js
 import express from "express";
-// Import fetch (Node 18+ has global fetch, but this ensures it works everywhere)
-import fetch from "node-fetch";
+import dotenv from "dotenv";
+import OpenAI from "openai";
 
-// Create a new router instance for all chat-related endpoints
+dotenv.config();
+
 const router = express.Router();
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-// Define POST endpoint at /api/chat
-router.post("/api/chat", async (req, res) => {
-  // Extract data sent from frontend
-  const { messages, bookContext } = req.body;
+console.log("🚀 ChatRouter running with dual AI modes");
 
-  // Validate: messages must be an array of chat message objects
-  if (!Array.isArray(messages)) {
-    // If not valid, return HTTP 400 (Bad Request)
-    return res.status(400).json({ error: "Invalid payload: messages must be an array" });
-  }
-
+router.post("/", async (req, res) => {
   try {
-    // 👇 Build a request to OpenAI’s chat completions endpoint
-    const response = await fetch("https://api.openai.com/v1/chat/completaions", {
-      method: "POST", // POST request
-      headers: {
-        "Content-Type": "application/json", // body is JSON
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // secret key from .env
-      },
-      body: JSON.stringify({
-        // Choose a lightweight, fast model
-        model: "gpt-4o-mini",
+    const { messages, bookContext, mode = "tagsAndDescription" } = req.body;
+    const { title, genre, description, text, chapter } = bookContext || {};
 
-        // Combine all chat messages:
-        // 1. A system message defining assistant’s behavior
-        // 2. The user messages from frontend
-        // 3. Optionally include context about the current book
-        messages: [
-          {
-            role: "system",
-            content: "You are a helpful book assistant. Be concise and helpful.",
-          },
-          ...messages,
-          {
-            role: "system",
-            content: JSON.stringify(bookContext ?? {}), // safe fallback if undefined
-          },
-        ],
+    let prompt = "";
 
-        // Control creativity & output length
-        temperature: 0.6, // 0 = factual, 1 = creative
-        max_tokens: 600, // limit response length
-      }),
-    });
+    // 🎯 Decide which AI mode to run
+    switch (mode) {
+      case "storyContinuation":
+        prompt = `
+You are a creative writing assistant continuing a story.
 
-    // Handle if OpenAI API responds with error
-    if (!response.ok) {
-      const errText = await response.text(); // read error details
-      console.error("OpenAI error:", response.status, errText); // log for debugging
-      return res.status(502).json({ error: "Upstream AI error" }); // send 502 back to client
+Book Title: "${title || "Untitled"}"
+Genre: "${genre || "Fiction"}"
+Chapter: ${chapter || 1}
+
+Story so far:
+${text || "No previous text provided."}
+
+You are a creative writing assistant helping a user write a book.
+Always stay consistent with the story's title, genre, and tone.
+Continue the story from the provided text naturally and creatively.
+`;
+        break;
+
+      case "tagsAndDescription":
+      default:
+        prompt = `
+You are a creative story assistant.
+Based on the following book info, generate a short book description and categorized tags.
+
+Book Info:
+Title: "${title || "Untitled"}"
+Genre: "${genre || "Fiction"}"
+Description: "${description || ""}"
+
+Return ONLY valid JSON in this format:
+{
+  "description": "A 2–3 sentence creative summary of the book.",
+  "tags": {
+    "mood": ["Whimsical", "Enchanting", "Reflective"],
+    "scenes": ["Magical Realism", "Urban Fantasia"],
+    "themes": ["Self-Discovery", "Connection"],
+    "setting": ["Adventure", "Imagination"],
+    "connections": ["Fans of Fantasy"]
+  }
+}
+Only return valid JSON — no extra commentary.
+        `;
+        break;
     }
 
-    // Parse JSON returned from OpenAI
-    const data = await response.json();
+    // 🧠 Call the OpenAI API
+    const response = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "You are a creative assistant for writers." },
+        { role: "user", content: prompt },
+        ...(messages || []),
+      ],
+      temperature: 0.8,
+    });
 
-    // Extract just the text message from OpenAI's structured response
-    const reply = data.choices?.[0]?.message?.content ?? "";
+    const aiText = response.choices?.[0]?.message?.content?.trim() || "";
+    console.log("🧠 Raw AI output:", aiText);
 
-    // Send the reply back to frontend as JSON
-    return res.json({ reply });
+    if (!aiText) {
+      return res.status(500).json({ error: "AI returned an empty response." });
+    }
+
+    // ✨ Handle story continuation mode
+    if (mode === "storyContinuation") {
+      return res.json({ story: aiText });
+    }
+
+    // 🧩 Parse the JSON output for tags & description
+    let parsed;
+    try {
+      parsed = JSON.parse(aiText);
+    } catch (err) {
+      console.warn("⚠️ AI did not return valid JSON. Using fallback.");
+      parsed = {
+        description: aiText || "No description generated.",
+        tags: {
+          mood: ["mystical"],
+          scenes: ["intro"],
+          themes: ["courage"],
+          setting: ["friendship"],
+          connections: ["fantasy readers"],
+        },
+      };
+    }
+
+    // 🎨 Assign pastel colors for UI
+    const generateTagColor = (tagName) => {
+      let hash = 0;
+      for (let i = 0; i < tagName.length; i++) {
+        hash = tagName.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const hue = Math.abs(hash) % 360;
+      return `hsl(${hue}, 70%, 75%)`;
+    };
+
+    const colorizedTags = {};
+    for (const [category, list] of Object.entries(parsed.tags || {})) {
+      colorizedTags[category] = list.map((t) => ({
+        name: typeof t === "string" ? t : t.name,
+        color: generateTagColor(typeof t === "string" ? t : t.name),
+      }));
+    }
+
+    // ✅ Return clean structured data
+    res.json({
+      description: parsed.description,
+      tags: colorizedTags,
+    });
   } catch (error) {
-    // Catch network issues, API key errors, etc.
-    console.error("Chat proxy error:", error);
-    return res.status(500).json({ error: "Assistant unavailable" });
+    console.error("❌ AI request failed:", error);
+    res.status(500).json({ error: "AI request failed." });
   }
 });
 
-// Export this router so server.js can mount it
 export default router;

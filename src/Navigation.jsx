@@ -16,9 +16,7 @@ export default function MainPage() {
 
         {/* Scrollable links for small screens (same links duplicated) */}
         <div className="nav-links-scroll" aria-hidden="true">
-          <Link to="/" className="nav-link">StoryBoard</Link>
-          <Link to="/imagedesign" className="nav-link">Imagine Design</Link>
-          <Link to="/storyboardpage" className="nav-link">Storyboard Page</Link>
+          <Link to="/" className="nav-link">Back</Link>
         </div>
       </nav>
 

@@ -1,112 +1,419 @@
-/* Basic container layout: left and right side */
-/*------------------------------BAckdrop for THe whole page --------------------------------------------------------------------------------------------*/
-@import url('https://fonts.googleapis.com/css2?family=Unkempt:wght@400;700&display=swap');
+/* ===== Modern Dashboard Aesthetic ===== */
 
-
-.container {
-  display: flex;
-  align-items: flex-start;
-  padding: 20px;
-  font-family: "Unkempt", cursive;
-  font-weight: 700;
-  font-style: normal;
-  margin-right: 320px;
-  min-height: 100vh;
-  position: relative;
-  z-index: 1;
-
+:root {
+  --primary-color: #0c3cb5;
+  --secondary-color: #6eff99;
+  --accent-color: #a1c900;
+  --bg-dark: #0e0e17;
+  --bg-panel: #181828;
+  --bg-card: rgba(255, 255, 255, 0.06);
+  --text-light: #f8f8ff;
+  --text-muted: #b7b7c8;
+  --radius: 14px;
+  --transition: 0.3s ease;
+  --shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Background layers */
-.container-bg1,
-.container-bg2 {
-  position: fixed;
+/* ===== Base ===== */
+
+/* ===== Main Layout ===== */
+/* 🌌 Main Container */
+/* ===== Main Layout Wrapper ===== */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ===== Left Sidebar ===== */
+.sidebar {
+  width: 260px;
+  backdrop-filter: blur(8px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction:column;
+  justify-content: space-between;
+  position: fixed; /* keeps sidebar in place while scrolling */
   top: 0;
   left: 0;
+  height:100lvh;
+  z-index: 10;
+   
+}
+
+/* ===== Main Container ===== */
+.container {
+  display: flex; /* key fix: makes sidebar and main content side by side */
+  min-height: 100vh;
   width: 100%;
-  height: 100%;
-  background-repeat: repeat-x;
+  position: relative;
+  color: var(--text-light);
+  background-image: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.85),
+      rgba(0, 40, 20, 0.737)
+    ),
+    url('public/Homepage.png');
   background-size: cover;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  z-index: 0; /* stays behind content */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: bgPan 25s ease-in-out infinite alternate;
+  font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
-/* Foreground layer (faster scroll) */
-.container-bg1 {
-  background-image: url("/Homepage.png");
-  animation: scroll1 20s linear infinite;
+/* ===== Background Animation ===== */
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 60, 30, 0.4),
+    rgba(0, 0, 0, 0.7)
+  );
+  mix-blend-mode: overlay;
+  animation: gradientFlow 15s ease-in-out infinite alternate;
+  z-index: 0;
+  pointer-events: none;
 }
 
-/* Background layer (slower scroll) */
-.container-bg2 {
-  background-image: url("/Homepage.png");
-  opacity: 0.7;
-  animation: scroll2 60s linear infinite;
+/* Keeps content above animated layers */
+.container * {
+  position: relative;
+  z-index: 1;
 }
 
-
-@keyframes scroll1 {
-  from { background-position: 0 0; }
-  to { background-position: -2000px 0; }
+/* ===== Animations ===== */
+@keyframes bgPan {
+  0% { background-position: center top; }
+  50% { background-position: center center; }
+  100% { background-position: center bottom; }
 }
 
-@keyframes scroll2 {
-  from { background-position: 0 0; }
-  to { background-position: -1000px 0; }
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+/* ===== Left Sidebar ===== */
+
+
+.sidebar h1 {
+  font-size: 1.8rem;
+  color: var(--secondary-color);
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
 
+.nav-links button {
+  background: var(--bg-card);
+  border: none;
+  color: var(--text-light);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition);
+}
 
-/* LEFT DIAGRAM */
+.nav-links button:hover {
+  background: var(--secondary-color);
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.sidebar-footer {
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+/* ===== Main Content ===== */
 .diagram {
-  width: 60%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-/*==============Page Header Vi Story ==================================*/
-.container h1{
- background:-webkit-repeating-linear-gradient(11deg, #b38282 , #000000 , red ,green ,yellow ,brown);
-  opacity: 70%;
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  box-shadow: 0 8px 25px rgba(255, 0, 0, 0.25),
-              0 0 40px rgba(39, 99, 7, 0.4);
-  width:100%;
-  font-family: "Unkempt", cursive;
-  font-weight: 700;
-  font-style: normal;
+  flex: 1;
+  padding: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  overflow-y: auto;
+  justify-content: center;
+  position: relative;
 }
 
-.container .center {
-  font-family: "Unkempt", cursive;
-  font-weight: 700;
-  font-style: normal;
-  
 
 
-
+@keyframes bgPan {
+  0% { background-position: center top; }
+  50% { background-position: center center; }
+  100% { background-position: center bottom; }
 }
-/*==============Page Header Vi Story ==================================
-
-/*------------------------------ Props for Decoration --------------------------------------------------------------------------------------------*/
 
 
+/* ===== Center Heart + Intro ===== */
+.center {
+  flex-basis: 100%;
+  text-align: center;
+  margin-bottom: 2rem;
+  animation: fadeIn 1.5s ease;
+}
 
-/*================================================
-random image steps 
-====================Header=======================*/
+.center .heart {
+  font-size: 3rem;
+  animation: pulse 2s infinite;
+}
 
+.center h1 {
+  margin: 0.5rem 0;
+  font-size: 2.4rem;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
-/*================STairs=========================
-/*ONE Header, for the storyboard one
-/*================STairs=========================*/
+.center p {
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0.5rem auto;
+  font-size: 1rem;
+  line-height: 1.4;
+}
 
-  #topstep {
+/* ===== Cards (Interactive Sections) ===== */
+.boxstoryboard,
+.boximagine,
+.boxtraits,
+.boxroles {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem 1.8rem;
+  width: 270px;
+  min-height: 220px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.boxstoryboard:hover,
+.boximagine:hover,
+.boxtraits:hover,
+.boxroles:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.boxstoryboard h2,
+.boximagine h2,
+.boxtraits h2,
+.boxroles h2 {
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  color: var(--secondary-color);
+  text-align: center;
+}
+
+ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  list-style: none;
+  padding: 0;
+}
+
+ul button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-light);
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+ul button:hover {
+  background: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+/* ===== Animations ===== */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Scrollbar Style ===== */
+.diagram::-webkit-scrollbar {
+  width: 8px;
+}
+
+.diagram::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 900px) {
+  .sidebar {
+    width: 100%;
+    height: 70px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+  }
+
+  .nav-links {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .diagram {
+    padding: 2rem 1rem;
+    justify-content: center;
+  }
+
+  .boxstoryboard,
+  .boximagine,
+  .boxtraits,
+  .boxroles {
+    width: 90%;
+  }
+}
+
+.main-container {
+  display: flex;
+  height: 100vh;
+  color: #fff;
+  background: #121212;
+  font-family: "Poppins", sans-serif;
+}
+
+.sidebar {
+  width: 250px;
+  background: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 1rem;
+}
+
+.sidebar h1 {
+  color: #fff;
+  text-align: center;
+}
+
+.nav-links button {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #ddd;
+  text-align: left;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.3rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.nav-links button:hover {
+  background: #2b2b2b;
+  color: #fff;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+}
+
+.icon {
+  color: #bbb;
+  font-size: 1.2rem;
+  transition: 0.3s;
+}
+
+.icon:hover {
+  transform: translateY(-3px) scale(1.2);
+}
+
+.icon.facebook:hover { color: #1877f2; }
+.icon.instagram:hover { color: #e4405f; }
+.icon.linkedin:hover { color: #0a66c2; }
+.icon.youtube:hover { color: #ff0000; }
+.icon.behance:hover { color: #1769ff; }
+
+.sidebar-footer {
+  font-size: 0.8rem;
+  color: #777;
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+}
+
+/* === MAIN CONTENT === */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 3rem;
+  background: #181818;
+}
+
+.about-section {
+  max-width: 700px;
+  margin: auto;
+  text-align: center;
+}
+
+.about-section h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.about-section p {
+  color: #ccc;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* === AUTH SECTION === */
+.auth-section {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-container {
+  background: #222;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 350px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+#topstep {
   border: 5px;
   border: 5px solid black;  /* line around each step */
   margin: 4px auto; 
+  margin-right: -90px;
+  margin-top: -190px;
   padding: 40px 35px;
   cursor: pointer;
   width: 50%;
@@ -128,952 +435,68 @@ random image steps
     0% 75%     /* back near bottom left */
   );
   /* gradient background */
-  background:-webkit-repeating-linear-gradient(135deg, #c6a3a3, #8e6d6d);
+  background:-webkit-repeating-linear-gradient(135deg, #26a688, #8ba81675);
 
 }
 
-/*================Heart=========================
-/ Heart,=====================================
-/*================Heart=========================*/
-
-.heart {
-  font-size: 50px;
-}
-
-
-/*================Heart=========================
-/ Heart,=====================================
-/*================Heart=========================*/
-
-
-/*------------------------------ EventTriggers --------------------------------------------------------------------------------------------*/
-
-/*StoryBoard*================================================*/
-.boxstoryboard :hover{
-  scale: 120%;
-}
-
-.boxstoryboard ul :hover{
-  scale: 100%;
-}
-
-.boxstoryboard button :hover{
-  scale: 100%;
-}
-
-.boxstoryboard h2 :hover{
-  scale: 100%;
-}
-
-/*Imagne Design*================================================*/
-.boximagine :hover{
-  scale: 120%;
-}
-
-.boximagine-button :hover{
-  scale: 100%;
-}
-
-.boximagine ul :hover{
-  scale: 100%;
-}
-
-.boximagine button :hover{
-  scale: 100%;
-}
-
-/*Imagne Design*================================================*/
-.boxtraits :hover{
-  scale: 100%;
-}
-
-.boxtraits ul :hover{
-  scale: 100%;
-}
-
-.boxtraits button :hover{
-  scale: 100%;
-}
-
-.boxtraits h2 :hover{
-  scale: 100%;
-}
-/*Imagne Design*================================================*/
-.boxroles :hover{
-  scale: 100%;
-}
-
-.boxroles ul :hover{
-  scale: 100%;
-}
-
-.boxroles button :hover{
-  scale: 100%;
-}
-
-.boxroles h2 :hover{
-  scale: 100%;
-}
-
-/*ONE fl0ating box adder, for the storyboard one*/
-
-/*------------------------------BAckdrops for Buttons--------------------------------------------------------------------------------------------
-
-
-
-
-/*===================================================*/
-/*=============HeaderS FOR BOXES==============*/
-/*=============HeaderS storyboard BOXES==============*/
-/*==================================================*/
-
-.boxstoryboard h2{
-  padding: 45px;
-  background-color: #9b3232;
-  border-radius: 25%;
-  position: relative;
-  top: -50px;
-  right: 5px;
-  font-family: "Unkempt", cursive;
-  font-weight: 700;
-  font-style: normal;
-  scale: 100%;
-}
-
-.unkempt-bold {
-  font-family: "Unkempt", cursive;
-  font-weight: 700;
-  font-style: normal;
-}
-
-/*==============================*/
-.boxstoryboard{
-  width: 400px;
-  padding: 25px;
-  border-radius: 120px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(15px);
-  scale: 60%;
-  -webkit-backdrop-filter: blur(15px);
-  
-
-  box-shadow: 0 8px 25px rgb(255, 0, 0),
-              0 0 40px rgb(255, 0, 0);
-
-  color: #fff;
+.auth-container h2 {
   text-align: center;
-  animation: float 4s ease-in-out infinite;
+  margin-bottom: 1.5rem;
 }
 
-.boxstoryboard h2 {
-  margin: 0 0 10px;
-  font-size: 1.5rem;
-  letter-spacing: 1px;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
 }
 
-.boxstoryboard p {
-  font-size: 0.95rem;
-  opacity: 0.9;
+label {
+  color: #aaa;
+  margin-bottom: 0.3rem;
 }
 
- @keyframes float  {
-  0%   { transform: translateY(0px); }
-  50%  { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
-}
-/*============= =====================================*/
-/*=============HeaderS storyboard BOXES==============*/
-/*=============HeaderS imagedesign BOXES==============*/
-/*============= =====================================*/
-
-.boximagine h2{
-  padding: 40px;
-  background-color: #356d27;
-  border-radius: 40%;
-  position: relative;
-  top: -50px;
-  right: 30px;
-  scale: 100%;
-  font-family: "Unkempt", cursive;
-  font-weight: 700;
-  font-style: normal;
-}
-/*============= =====================================*/
-
-.boximagine{
-  text-shadow: #ffffff;
-  background: rgba(96, 45, 45, 0.3);
-  backdrop-filter: blur(15px); /* blurs only behind the box */
-  -webkit-backdrop-filter: blur(15px); /* Safari support */
-  scale: 60%;
-  color: rgb(243, 242, 242);
-
-}
-
-
-.boximagine{
-  width: 400px;
-  padding: 25px;
-  border-radius: 90px;
-  background: rgba(255, 255, 255, 0.08);
-
-  box-shadow: 0 8px 25px rgb(0, 255, 55),
-              0 0 40px rgb(3, 255, 3);
-
+input {
+  padding: 0.6rem;
+  border: none;
+  border-radius: 6px;
+  outline: none;
+  background: #333;
   color: #fff;
-  text-align: center;
-  animation: float 4s ease-in-out infinite;
 }
 
-.boximagine h2 {
-  margin: 0 0 10px;
-  font-size: 1.5rem;
-  letter-spacing: 1px;
-}
-
-.boximagine p {
-  font-size: 0.95rem;
-  opacity: 0.9;
-}
-
-@keyframes float {
-  0%   { transform: translateY(0px); }
-  50%  { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
-}
-/*============= =====================================*/
-/*=============HeaderS imagedesign BOXES==============*/
-/*=============HeaderS traits & gates BOXES==============*/
-/*============= =====================================*/
-
-.boxtraits h2{
-  padding: 36px;
-  background-color:darkkhaki;
-  border-radius: 25%;
-  position: relative;
-  top: -50px;
-  right: 5px;
-  scale: 100%;
-  font-family: "Unkempt", cursive;
-  font-weight: 700;
-  font-style: normal;
-}
-/*============= =====================================*/
-.boxtraits{
-  text-shadow: #ffffff;
-  border-radius: 125%;
-  background: rgba(96, 45, 45, 0.3);
-  backdrop-filter: blur(15px); /* blurs only behind the box */
-  -webkit-backdrop-filter: blur(10px); /* Safari support */
-  color: rgb(243, 242, 242);
-  scale: 70%;
-}
-
-.boxtraits{
-  padding: 35px;
-  border-radius: 120px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-
-  box-shadow: 0 8px 25px rgb(255, 247, 0),
-              0 0 40px rgb(255, 234, 0);
-
-  color: #fff;
-  text-align: center;
-  animation: float 4s ease-in-out infinite;
-}
-
-.boxtraits h2 {
-  margin: 0 0 10px;
-  font-size: 1.5rem;
-  letter-spacing: 1px;
-}
-
-.boxtraits p {
-  font-size: 0.95rem;
-  opacity: 0.9;
-}
-
-@keyframes float {
-  0%   { transform: translateY(0px); }
-  50%  { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
-}
-
-/*============= =====================================*/
-/*=============HeaderS imagedesign BOXES==============*/
-/*=============HeaderS roles BOXES==============*/
-/*============= =====================================*/
-
-.boxroles h2{
-  padding: 36px;
-  background-color:rgb(107, 107, 189);
-  border-radius: 25%;
-  position: relative;
-  top: -50px;
-  right: 5px;
-  scale: 100%;
-  font-family: "Unkempt", cursive;
-  font-weight: 700;
-  font-style: normal;
-}
-/*============= =====================================*/
-.boxroles{
-  text-shadow: #ffffff;
-  background: rgba(96, 45, 45, 0.3);
-  backdrop-filter: blur(15px); /* blurs only behind the box */
-  -webkit-backdrop-filter: blur(10px); /* Safari support */
-  color: rgb(243, 242, 242);
-  scale: 70%;
-}
-
-
-.boxroles{
-  padding: 35px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-radius: 10%;
-
-  box-shadow: 0 8px 25px rgb(29, 6, 204),
-              0 0 40px rgba(0, 179, 255, 0.4);
-
-  color: #fff;
-  text-align: center;
-  animation: float 4s ease-in-out infinite;
-}
-
-.boxroles h2 {
-  margin: 0 0 10px;
-  font-size: 1.5rem;
-  letter-spacing: 1px;
-}
-
-.boxroles p {
-  font-size: 0.95rem;
-  opacity: 0.9;
-}
-
-@keyframes float {
-  0%   { transform: translateY(0px); }
-  50%  { transform: translateY(-15px); }
-  100% { transform: translateY(0px); }
-}
-
-/*------------------------------ Buttons Customization --------------------------------------------------------------------------------------------*/
-
-
-/*============= =====================================*/
-/*==========storyboarding===Buttons==============*/
-/*============= =====================================*/
-/* ======  Steps storyboarding ====== */
-/*==================================================*/
-
-  .step1 {
-  appearance: none;
-  padding: 70px 35px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  width: 50%;
-  scale: 90%;
-  justify-content: left;
-  position: absolute;
-  bottom: 50px;
-  right: 9px;
-  rotate: -25deg;
-  /* gradient background */
-  background: linear-gradient(135deg, #fff700, #a3b21a);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-  .step3 {
-  appearance: none;
-  padding: 70px 35px;
-  font-size: 16px;
-  border-radius: 55%;
-  font-weight: 600;
-  font-family: sans-serif;
-  cursor: pointer;
-  color: #fff;
-  width: 50%;
-  scale: 100%;
-  justify-content: left;
-  position: absolute;
-  bottom: 50px;
-  left: 20px;
-  clip-path:circle();
-  /* gradient background */
-  background: linear-gradient(135deg, #1f91cf, #1479d7);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-  .step2 {
-  appearance: none;
-  padding: 60px 35px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  width: 50%;
-  scale: 100%;
-  justify-content: left;
-  position: absolute;
-  bottom: 5px;
-  left: 115px;
-  /* gradient background */
-  background: linear-gradient(135deg, #08ff0c, #156319);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-/* glowing border effect */
-.boxstoryboard ul button ::after {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #000000, #000000);
-  filter: blur(14px);
-  opacity: 0.5;
-  z-index: -1;
-  transition: opacity 0.25s ease;
-}
-
-/* hover effect: lift + stronger glow */
-.boxstoryboard ul button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.6);
-}
-.boxstoryboard ul button:hover::after {
-  opacity: 0.9;
-}
-
-/* click/active press */
-.boxstoryboard ul button:active {
-  transform: translateY(2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-/*ONE folating box adder, for the storyboard one
-*/
-
-/*============= =====================================*/
-/*==========Imagine Design===Buttons==============*/
-/*============= =====================================*/
-/* ======  Steps Imagine Design ====== */
-/*==================================================*/
-
-.GUY {
-  appearance: none;
-  padding: 40px 35px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  width: 50%;
-  scale: 100%;
-  top: 120px;
-  right: 150px;
-  rotate: 24deg;
-  /* gradient background */
-  background: linear-gradient(135deg, #22c856, #08a429);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-  .BOX {
-  appearance: none;
-  padding: 40px 35px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  width: 50%;
-  scale: 100%;
-  top: 120px;
-  left: 36px;
-  rotate: -24deg;
-  /* gradient background */
-  background: linear-gradient(135deg, #4390dd, #1187ae);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-  .TREE {
-  appearance: none;
-  padding: 40px 35px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  width: 50%;
-  scale: 100%;
-  top: 30px;
-  right: 56px;
-  /* gradient background */
-  background: linear-gradient(135deg, #cedb16, #b8b51e);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-.boximagine ul button{
-    color: #ffffff;
-    background-color: #333;
-}
-
-/* glowing border effect */
-.boximagine ul button ::after {
-  content: "";
-  inset: -4px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #000000, #000000);
-  filter: blur(14px);
-  opacity: 0.5;
-  z-index: -1;
-  transition: opacity 0.25s ease;
-}
-
-/* hover effect: lift + stronger glow */
-.boximagine ul button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.6);
-}
-.boximagine ul button:hover::after {
-  opacity: 0.9;
-}
-
-/* click/active press */
-.boximagine ul button:active {
-  transform: translateY(2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-.boximagine p{
-  font-family: "Unkempt", cursive;
-  font-weight: 700;
-  font-style: normal;
-  font-size: x-large;
-  color: #000000;
-}
-/*ONE folating box adder, for the storyboard one
-*/
-
-/*============= =====================================*/
-/*==========Traits & Relates===Buttons==============*/
-/*============= =====================================*/
-/* ======  Steps Traits & Relates ====== */
-/*==================================================*/
-
-.Emotions {
-  appearance: none;
-  padding: 50px 35px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  width: 50%;
-  scale: 100%;
-  justify-content: left;
-  position: absolute;
-  top: 50px;
-  right: 100px;
-  rotate: -5deg;
-  /* gradient background */
-  background: linear-gradient(135deg, #169fe3, #225d93);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-.Morals {
-  appearance: none;
-  padding: 50px 35px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  width: 50%;
-  scale: 100%;
-  justify-content: left;
-  position: absolute;
-  top: 50px;
-  right: 70px;
-  rotate: 25deg ;
-  /* gradient background */
-  background: linear-gradient(135deg, #1f9825, #0fc14e);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-.ACTIONS {
-  appearance: none;
-  padding: 80px 35px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  width: 50%;
-  scale: 100%;
-  justify-content: left;
-  position: absolute;
-  top: 90px;
-  left: 160px;
-  clip-path: circle();
-  /* gradient background */
-  background: linear-gradient(135deg, #d3de0c, #dcef10);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-/* glowing border effect */
-.boxtraits ul button ::after {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #000000, #000000);
-  filter: blur(14px);
-  opacity: 0.5;
-  z-index: -1;
-  transition: opacity 0.25s ease;
-}
-
-/* hover effect: lift + stronger glow */
-.boxtraits ul button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.6);
-}
-.boxtraits ul button:hover::after {
-  opacity: 0.9;
-}
-
-/* click/active press */
-.boxtraits ul button:active {
-  transform: translateY(2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-
-.boxtraits p{
-  font-family: "Unkempt", cursive;
-  font-weight: 700;
-  font-style: normal;
-  font-size: x-large;
-  text-align: left;
-  position: absolute;
-  top: 350px;
-  left: 30px;
-  color: #000000;
-}
-
-/*============= =====================================*/
-/*==========Roles===Buttons==============*/
-/*============= =====================================*/
-/* ======  Steps Roles ====== */
-/*==================================================*/
-
-
-.im {
-  appearance: none;
-  padding: 50px 30px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  width: 40%;
-  scale: 100%;
-  justify-content: left;
-  position: absolute;
-  bottom: 50px;
-  right: 9px;
-  /* gradient background */
-  background: linear-gradient(135deg, #dcf80a, #eeee0b);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-.his {
-  appearance: none;
-  padding: 90px 35px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  width: 50%;
-  scale: 90%;
-  justify-content: left;
-  position: absolute;
-  bottom: 50px;
-  left: 70px;
-  clip-path: circle();
-  /* gradient background */
-  background: linear-gradient(135deg, #178ddc, #07b2f0);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-.dad {
-  appearance: none;
-  padding: 60px 35px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: sans-serif;
-  border-radius: 12px;
-  cursor: pointer;
-  color: #fff;
-  width: 50%;
-  scale: 80%;
-  justify-content: left;
-  position: absolute;
-  bottom: 80px;
-  right: 9px;
-  /* gradient background */
-  background: linear-gradient(135deg, #40e323, #11e00e);
-
-  /* soft shadow */
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-
-  /* smooth animation */
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  position:relative;
-  overflow: hidden;
-}
-
-/* glowing border effect */
-.boxroles ul button ::after {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #000000, #000000);
-  filter: blur(14px);
-  opacity: 0.5;
-  z-index: -1;
-  transition: opacity 0.25s ease;
-}
-
-/* hover effect: lift + stronger glow */
-.boxroles ul button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.6);
-}
-.boxroles ul button:hover::after {
-  opacity: 0.9;
-}
-
-/* click/active press */
-.boxroles ul button:active {
-  transform: translateY(2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-/*------------------------------SIDE BAR--------------------------------------------------------------------------------------------
-*/
-.center {
-  grid-column: span 2;
-  text-align: center;
-}
-
-/* RIGHT PANEL */
-.panel {
-  position: fixed;            /* stays in place even when scrolling */
-  top: 0;  
-  right: 0;                   /* aligns to the far right edge */
-  width: 300px;               /* fixed width for sidebar */
-  height: 100vh;              /* full viewport height */
-  overflow-y:auto;           /* allow scrolling inside the panel */
-  background-image: url(/Users/Admin/chatgpt/my-app/src/assets/1000_F_144609212_TIhDcaiZ6F7uPlGGLF0S8gz1od1ZbTyv-removebg-preview.png);
-  mix-blend-mode: screen; /* options: multiply, overlay, lighten, darken, etc. */
-  opacity: 0.9; /* optional transparency */
-  background-size: contain;    /* cover entire panel area */
-  z-index: 10;                /* sits above background, below modals */
-  padding: 20px;
-  box-shadow: -4px 0 15px rgba(0, 0, 0, 0.4);
-}
-
-/* Sidebar==============Text ====================*/
-
-.panel h1 {
-  background: #999;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  border-radius: 8px;
-  
-}
-
-/* Sidebar==============BUTTON ====================*/
-
-.panel button {
-  background: #999;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  align-content: center;
-  border-radius: 8px;
+.auth-btn {
   width: 100%;
-  text-size-adjust: 5%;
-  color: #000000;
-}
-/* Sidebar==============Layout====================*/
-
-.card-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin: 20px 0;
-  width: 260px;
-}
-
-.card-grid button{
-  content: "";
-  inset: -4px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #000000, #000000);
-  filter: blur(-1px);
-  opacity: 50;
-  z-index: -1;
-  transition: opacity 0.3s ease;
+  background: #ff006e;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 8px;
   color: white;
-
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: bold;
+  transition: 0.3s;
 }
 
+.auth-btn:hover {
+  background: #ff338f;
+}
 
-/* Sidebar==============Write your story ====================*/
-.storycard{
-  background: rgb(9, 6, 81);
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  font-size: 14px;
-  position: relative;
+.toggle-text {
+  text-align: center;
+  margin-top: 1rem;
+  color: #aaa;
 }
-/* Sidebar==============Write your story ====================*/
-.characterscard{
-  background: rgb(0, 77, 23);
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  font-size: 14px;
-  position: relative;
-}
-/* Sidebar==============Write your story ====================*/
-.scenescard{
-  background: rgb(94, 2, 2);
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  font-size: 14px;
-  position: relative;
-}
-/* Sidebar==============Write your story ====================*/
-.settingscard{
-  background: rgb(87, 94, 4);
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  font-size: 14px;
-  position: relative;
-}
-/* Sidebar==============Write your story ====================*/
 
-.panel span {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #eee;
-  padding: 4px 8px;
-  border-radius: 4px;
+.toggle-text span {
+  color: #ff006e;
+  cursor: pointer;
+  font-weight: bold;
 }
-/* Sidebar==============Sidebar====================
 
-/*ONE folating box adder, for the storyboard one
-*/
-/*ONE folating box adder, for the storyboard one
-*/
+/* === FOOTER === */
+.main-footer {
+  margin-top: 4rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #888;
+}

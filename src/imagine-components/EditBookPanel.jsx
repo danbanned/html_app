@@ -2,21 +2,17 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import "../styles/AddBookPanel.css"; // Reuse AddBookPanel styling
 import { useChatCompletion } from "../hooks/useChatCompletion";
-import "../styles/EditBookPanel.css"
+import "../styles/EditBookPanel.css";
 
 export default function EditBookPanel({ book, onUpdateBook, onClose }) {
-  if (!book) return null; // safety guard
+  if (!book) return null;
 
-  // Prefill existing book data
   const [title, setTitle] = useState(book.title || "");
   const [author, setAuthor] = useState(book.author || "");
   const [genre, setGenre] = useState(book.genre || "");
   const [description, setDescription] = useState(book.description || "");
   const [coverImage, setCoverImage] = useState(book.coverImage || "");
   const [coverColor, setCoverColor] = useState(book.coverColor || "#4a90e2");
-  const chat = useChatCompletion();
-  const [isShowScroll, setShowScroll] = useState(false);
-
   const [tags, setTags] = useState(
     book.tags || {
       characters: [],
@@ -27,25 +23,27 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
       connections: [],
     }
   );
-
   const [currentCategory, setCurrentCategory] = useState("characters");
   const [currentTag, setCurrentTag] = useState("");
+  const [isShowScroll, setShowScroll] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  const chat = useChatCompletion();
 
   const TITLE_LIMIT = 20;
   const AUTHOR_LIMIT = 15;
   const GENRE_LIMIT = 12;
 
-  // 🎨 Generate consistent pastel color from tag text
+  // Generate pastel color for tags
   const generateTagColor = (tagName) => {
     let hash = 0;
-    for (let letter = 0; letter < tagName.length; letter++)
-      hash = tagName.charCodeAt(letter) + ((hash << 5) - hash);
+    for (let i = 0; i < tagName.length; i++)
+      hash = tagName.charCodeAt(i) + ((hash << 5) - hash);
     const hue = Math.abs(hash) % 360;
     return `hsl(${hue}, 70%, 75%)`;
   };
 
-  // 🖼️ Handle file upload for cover
+  // File upload handler
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -54,54 +52,42 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
     reader.readAsDataURL(file);
   };
 
-  const handleAddPremadeImage = () => {
-  const premadeImages = [
-    "/images/book1.jpg",
-    "/images/book2.jpg",
-    "/images/book3.jpg",
-    "/images/book4.jpg",
-    "/images/book5.jpg",
-    "/images/book6.jpg",
-    "/images/book7.jpg",
-    "/images/book8.jpg",
-    "/images/book9.jpg",
-    "/images/book10.jpg",
-  ];
-  const random = Math.floor(Math.random() * premadeImages.length);
-  setCoverImage(premadeImages[random]);
-};
+  // ✅ Infinite random Picsum image
+  const handleAddPremadeImage = async () => {
+    try {
+      const randomId = Math.floor(Math.random() * 1000); // random 0-999
+      const url = `https://picsum.photos/id/${randomId}/400/300`;
 
-  // ➕ Add a tag (manual or AI)
-  const addTag = (aiTag) => {
-  const tagName =
-    typeof aiTag === "string"
-      ? aiTag.trim()
-      : aiTag?.name?.trim?.() || currentTag.trim();
+      // Optional: ensure image exists
+      const res = await fetch(url);
+      if (!res.ok) return handleAddPremadeImage();
 
-  if (!tagName) return;
-
-  const color = generateTagColor(tagName);
-
-  const newTag = {
-    name: tagName,
-    color,
+      setCoverImage(url);
+    } catch (err) {
+      console.error("Failed to fetch random image:", err);
+    }
   };
 
-  setTags((prev) => ({
-    ...prev,
-    //it wants a list 
-    [currentCategory]: [
-      //it wants the current catagory so it can find its value and add a newtag 
-      ...(prev[currentCategory] || []),
-      newTag,
-    ],
-  }));
+  // Add a tag
+  const addTag = (aiTag) => {
+    const tagName =
+      typeof aiTag === "string"
+        ? aiTag.trim()
+        : aiTag?.name?.trim?.() || currentTag.trim();
+    if (!tagName) return;
 
-  setCurrentTag("");
-};
+    const color = generateTagColor(tagName);
 
+    const newTag = { name: tagName, color };
 
-  // ❌ Remove a tag
+    setTags((prev) => ({
+      ...prev,
+      [currentCategory]: [...(prev[currentCategory] || []), newTag],
+    }));
+
+    setCurrentTag("");
+  };
+
   const removeTag = (category, tagName) => {
     setTags((prev) => ({
       ...prev,
@@ -109,16 +95,14 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
     }));
   };
 
-  // 🧠 AI Integration: generate suggestions for description and tags
+  // AI assist for description and tags
   const handleAIAssist = async () => {
-
     if (!title && !genre && !description) {
       alert("Please add at least a title or genre before using AI assist.");
       return;
     }
 
     setIsGenerating(true);
-    
 
     try {
       const { mutateAsync } = chat;
@@ -138,35 +122,27 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
           },
         ],
       };
+      console.log(chat)
 
       const data = await mutateAsync(payload);
-      console.log("✅ AI response:", data.tags);
 
       if (data.description) setDescription(data.description);
-
-      if (data.tags) {
-
-        // Go through AI tags and use addTag for each one
-        setTags(data.tags)
-        console.log(tags)
-      }
+      if (data.tags) setTags(data.tags);
     } catch (err) {
-      console.error("❌ AI generation failed:", err);
+      console.error("AI generation failed:", err);
       alert("AI generation failed. Check server logs.");
     } finally {
       setIsGenerating(false);
     }
   };
 
+  // Save edited book
+  const submitBook = () => {
+    if (!title.trim()) return alert("Please enter a title!");
+    if (!author.trim()) return alert("Please enter an author name!");
+    if (!genre.trim()) return alert("Please enter a genre!");
 
-
-  // 💾 Save edited book actually updates it
-  const Submitmybookafteriaddanewoneoreditone = () => {
-    if (!title.trim()) return alert("⚠️ Please enter a title!");
-    if (!author.trim()) return alert("⚠️ Please enter an author name!");
-    if (!genre.trim()) return alert("⚠️ Please enter a genre!");
-
-    const updatedBook = {
+    onUpdateBook({
       ...book,
       title,
       author,
@@ -175,9 +151,8 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
       coverImage,
       coverColor,
       tags,
-    };
+    });
 
-    onUpdateBook(updatedBook);
     onClose();
   };
 
@@ -216,7 +191,7 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
       >
         <h2>Edit Book 📚</h2>
 
-        {/* --- BASIC FIELDS --- */}
+        {/* BASIC FIELDS */}
         <div className="field">
           <label>Title</label>
           <input
@@ -256,7 +231,7 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
           />
         </div>
 
-        {/* --- TAG SYSTEM --- */}
+        {/* TAG SYSTEM */}
         <div className="field">
           <label>Tags (auto-colored)</label>
           <select
@@ -303,9 +278,9 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
           </div>
         </div>
 
-        {/* --- COVER --- */}
+        {/* COVER IMAGE */}
         <div className="field">
-          <button onClick={handleAddPremadeImage}>🎨 Add Premade Image</button>
+          <button onClick={handleAddPremadeImage}>🎨 Random Premade Image</button>
           <label>Cover Image</label>
           <input
             type="text"
@@ -314,6 +289,11 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
             placeholder="Paste image URL"
           />
           <input type="file" accept="image/*" onChange={handleFileUpload} />
+          {coverImage && (
+            <div className="cover-preview">
+              <img src={coverImage} alt="Selected Cover" />
+            </div>
+          )}
         </div>
 
         <div className="field">
@@ -325,29 +305,12 @@ export default function EditBookPanel({ book, onUpdateBook, onClose }) {
           />
         </div>
 
-        <div className="scroll-wrapper">
-          {!isShowScroll ? (
-            <button className="show-btn" onClick={() => setShowScroll(true)}>
-              Show Books
-            </button>
-                ) : (
-            <div className="scroll-container">
-              <div className="scroll-track">
-                {/* First set of images */}
-                <img src="/scrollbook1.jpg" alt="Scroll Book 1" />
-                <img src="/public/scrollbook2.jpg" alt="Scroll Book 2" />
-                {/* Duplicate set for smooth infinite loop */}
-                <img src="/scrollbook1.jpg" alt="Scroll Book 1" />
-                <img src="/scrollbook2.jpg" alt="Scroll Book 2" />
-              </div>
-            </div>
-           )}
-    </div>
-
-        {/* --- ACTION BUTTONS --- */}
+        {/* ACTION BUTTONS */}
         <div className="buttons">
-          <button onClick={Submitmybookafteriaddanewoneoreditone}>Save Changes</button>
-          <button className="cancel" onClick={onClose}>Cancel</button>
+          <button onClick={submitBook}>Save Changes</button>
+          <button className="cancel" onClick={onClose}>
+            Cancel
+          </button>
           <button onClick={handleAIAssist} disabled={isGenerating} className="ai-button">
             {isGenerating ? "✨ Generating..." : "🤖 AI Assist"}
           </button>

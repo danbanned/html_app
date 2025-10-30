@@ -69,9 +69,12 @@
 .book-details {
   position: relative;
   z-index: 2;
-  color: white;
+  color: rgb(252, 252, 252);
   text-shadow: 0 2px 1px rgb(0, 0, 0);
   padding: 1rem;
+  background-color: #2222222f;
+  filter: blur(12%)
+
 };
 
 .book- h3 .book-card p {
@@ -122,22 +125,268 @@
   position: relative;
 }
 
-.book-reader .close-btn {
+
+.book-cover {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.book-info .label {
+  font-weight: bold;
+  color: #333;
+  margin-right: 0.5rem;
+}
+
+.book-color .color-box {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+/* --- Empty Message --- */
+.empty-msg {
+  color: #888;
+  font-size: 1rem;
+  margin-top: 50px;
+  text-align: center;
+}
+
+/* --- Shine Effect --- */
+.book-shine {
+  z-index: 1;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    75deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+  transition: left 0.8s ease;
+}
+
+.book-card:hover .book-shine {
+  left: 150%;
+}
+
+.tag-item, .tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  margin: 3px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: default;
+  transition: transform 0.2s;
+}
+
+.tag-item button {
+  margin-left: 5px;
+  border: none;
+  background: transparent;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.tag:hover {
+  transform: scale(1.1);
+}
+
+.tag-input {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.tag-summary {
+  margin-top: 6px;
+  font-size: 0.8rem;
+}
+
+.book-reader {
+  position: relative;
+  padding: 2rem;
+  border-radius: 1rem;
+  overflow-y: auto;
+  color: #222;
+  animation: fadeIn 0.4s ease;
+  max-height: 90vh;
+}
+
+.book-reader-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.close-btn {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: crimson;
-  color: white;
+  background: rgba(156, 65, 65, 0.8);
   border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: 0.2s;
+}
+.close-btn:hover {
+  background: rgba(255,255,255,1);
+  transform: scale(1.1);
 }
 
-.book-reader .close-btn:hover {
-  background: #a00;
+/* --- Book Shelf Layout --- */
+.book-shelf,
+.scrollable-shelf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
 }
+
+.scrollable-shelf::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable-shelf::-webkit-scrollbar-thumb {
+  background-color: #14afca;
+  border-radius: 4px;
+}
+
+.scrollable-shelf::-webkit-scrollbar-track {
+  background: #f2f2f2;
+}
+
+/* --- Book Card (Individual Books) --- */
+.book-card {
+  width: 150px;
+  height: 250px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px solid #14afca;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  background-color: transparent;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+}
+
+/* --- Hover Tilt Effect --- */
+.book-card:hover {
+  transform: rotateY(8deg) scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Book Image --- */
+.book-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 10px;
+  z-index: 0; /* Keeps image behind text */
+  pointer-events: none; /* ✅ Prevents blocking clicks or text selection */
+}
+
+/* --- Book Text --- */
+.book-details {
+  position: relative;
+  z-index: 2;
+  color: rgb(252, 252, 252);
+  text-shadow: 0 2px 1px rgb(0, 0, 0);
+  padding: 1rem;
+  background-color: #2222222f;
+  filter: blur(12%)
+
+};
+
+.book- h3 .book-card p {
+  z-index: 2;
+  color: white;
+  text-shadow:
+    2px 2px 4px rgba(0, 0, 0, 0.9),  /* deep shadow for depth */
+    -2px -2px 4px rgba(0, 0, 0, 0.9); /* optional top highlight */
+  -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.9); /* dark outline */
+  margin: 2px 0;
+};
+
+/* --- Overlay Gradient --- */
+.book-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 40%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  z-index: 1;
+}
+
+/* --- Empty Slot --- */
+.book-card.empty {
+  border: 2px dashed #14afca;
+  background: rgba(255, 255, 255, 0.05);
+  color: #14afca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plus-sign {
+  font-size: 48px;
+  font-weight: bold;
+  user-select: none;
+}
+
+/* --- Reader Page --- */
+.book-reader {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.15);
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: left;
+  position: relative;
+}
+
 
 .book-cover {
   width: 100%;
@@ -321,7 +570,7 @@
 .book-content {
   margin-top: 2rem;
   padding: 1.5rem;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.656);
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
@@ -373,7 +622,7 @@
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 3px 10px rgba(98, 41, 41, 0.2);
   transition: 0.25s;
 }
 
@@ -442,3 +691,284 @@
 .book-card-actions .delete-btn:hover {
   background-color: rgba(220, 53, 69, 1);
 }
+
+
+/*--------------------Book-Reader-Page----------------------*/
+.book-reader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  padding: 3rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 16px;
+  animation: fadeIn 0.5s ease;
+  color: #222;
+  font-family: "Inter", sans-serif;
+}
+
+.book-reader::-webkit-scrollbar {
+  width: 8px;
+}
+
+.book-reader::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+/* HEADER AREA */
+.book-reader-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.book-reader-header .close-btn {
+  position: absolute;
+  top: 0;
+  left: 50;
+  background: rgba(255, 1, 1, 0.898);
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: #ffffff;
+  padding: 0.10rem 0.10rem;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: all 0.25s ease;
+}
+
+.book-reader-header .close-btn:hover {
+  background: #ff6b6b;
+  color: white;
+  transform: scale(1.1);
+}
+
+/* COVER IMAGE */
+.book-cover-frame {
+  width: 220px;
+  height: 300px;
+  margin-top: 1.2rem;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.book-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.4), transparent 50%);
+  border-radius: inherit;
+}
+
+/* META INFO */
+.book-meta h2 {
+  margin-top: 1rem;
+  font-size: 2.2rem;
+  color: #111;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.book-meta h4 {
+  margin-top: 0.2rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.book-genre-tag {
+  display: inline-block;
+  margin-top: 0.5rem;
+  background: #222;
+  color: #fff;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+/* MAIN CONTENT */
+.book-content {
+  max-width: 800px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  padding: 2rem 3rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  line-height: 1.7;
+  backdrop-filter: blur(10px);
+}
+
+.book-description {
+  font-size: 1.05rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+/* TAGS */
+.tag-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.tag-block h5 {
+  color: #111;
+  margin-bottom: 0.3rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bubble {
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  color: #222;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  backdrop-filter: blur(6px);
+}
+
+/* BUTTONS */
+.reader-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.continue-btn {
+  background: linear-gradient(135deg, #007bff, #00b4d8);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.continue-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+}
+
+/* SMALL SCREENS */
+@media (max-width: 768px) {
+  .book-reader {
+    padding: 2rem;
+  }
+
+  .book-cover-frame {
+    width: 180px;
+    height: 250px;
+  }
+
+  .book-content {
+    padding: 1.5rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*--------------------Book-Reader-Page----------------------*/
+
+
+.continue-btn {
+  background-color: #4a90e2;
+  color: #fff;
+}
+
+.chapter-btn {
+  background-color: #ffb347;
+  color: #222;
+}
+
+.reader-buttons button:hover {
+  transform: scale(1.05);
+}
+
+/* --- Edit & Delete Buttons on Book Cards --- */
+.book-card-actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 6px;
+  z-index: 3; /* above everything else */
+}
+
+.book-card-actions button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+}
+
+
+.book-card-actions button:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+  transform: scale(1.1);
+}
+
+/* Adjustments to make sure hover tilt doesn't hide buttons */
+.book-card:hover .book-card-actions {
+  z-index: 10;
+}
+
+/* Optional: smaller icon buttons for tight spaces */
+.book-card-actions .edit-btn {
+  background-color: rgba(74, 144, 226, 0.8); /* blue for edit */
+}
+
+.book-card-actions .delete-btn {
+  background-color: rgba(220, 53, 69, 0.8); /* red for delete */
+}
+
+.book-card-actions .edit-btn:hover {
+  background-color: rgba(74, 144, 226, 1);
+}
+
+.book-card-actions .delete-btn:hover {
+  background-color: rgba(220, 53, 69, 1);
+}
+

@@ -21,14 +21,18 @@ app.use(cors());
 // Parse incoming JSON request bodies automatically
 app.use(express.json());
 
+console.log("chatRouter is:", chatRouter);
 // Mount the chat router (all /api/chat requests go here)
-app.use("/", chatRouter);
+app.use("/api/chat", chatRouter);
 
+app.get("/", (req, res) => {
+  res.send("🚀 Backend running successfully");
+});
 // Define server port and start listening
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 
-
+//Frontend → chatRouter → OpenAI → chatRouter → Frontend
 //app.use(express.json());
 //app.use(chatRouter);
 //app.listen(process.env.PORT || 3000);

@@ -23,6 +23,7 @@
   max-height: 100vh;         /* ✅ fits full screen height */
   display: flex;
   flex-direction: column;
+  z-index: 2000
 }
 
 /* make sure the field sections have spacing */
@@ -46,6 +47,9 @@
   background: #fff;
   padding-top: 10px;
   border-top: 1px solid #ddd;
+  position: relative;
+  z-index: 10; /* ✅ bring buttons to front */
+
 }
 
 .saveBtn {
@@ -66,4 +70,22 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
+}
+
+.miniPanel {
+  width: 320px !important;
+  padding: 1rem !important;
+}
+
+.imagePreview {
+  margin-top: 10px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.imagePreview img {
+  width: 100%;
+  height: auto;
+  display: block;
 }

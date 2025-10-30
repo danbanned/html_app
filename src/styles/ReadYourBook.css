@@ -1,177 +1,525 @@
+/* 🌌 MAIN CONTAINER */
 .read-your-book {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background: linear-gradient(to bottom right, #f0f4f8, #e1e8ee);
-  padding: 1rem;
+  height: 100vh;
+  background: radial-gradient(circle at top left, #10161f, #070b11 80%);
+  color: #e7faff;
+  font-family: "Georgia", serif;
   overflow: hidden;
+  margin-top: 9 ;
 }
 
-.reader-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
+ /* === Book Layout === */
 .book-layout {
   display: flex;
-  flex: 1;
-  gap: 1rem;
+  height: 100vh;
+  position: relative;
   overflow: hidden;
 }
 
+/* === Sidebar === */
 .sidebar {
-  width: 250px;
-  background: rgba(16, 86, 97, 0.268);
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  background: rgba(30, 30, 30, 0.4);
+  backdrop-filter: blur(6px);
+  border-right: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
+  color: #eee;
+  padding: 20px;
   overflow-y: auto;
+  z-index: 2;
 }
 
 .sidebar-section {
   margin-bottom: 1.5rem;
 }
 
-.tag-bubbles {
-  display:flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-}
-
-.bubble {
-  padding: 0.3rem 0.6rem;
-  border-radius: 10px;
-  font-size: 0.8rem;
-  color: white;
-}
-
-.book-view {
-  flex: 1;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-  padding: 1rem;
-  position: relative;
-  overflow: hidden;
-}
-
-.page {
-  position: relative;
-  padding: 1.2rem;
-  background: #553a3a;
-  border-radius: 12px;
-  min-height: 70vh;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.page-text {
-  width: 100%;
-  min-height: 200px;
-  resize: vertical;
-  font-size: 1.1rem;
-  padding: 1rem;
-  border: none;
-  outline: none;
-  border-radius: 8px;
-  background: #fff;
-  margin-bottom: 1rem;
-}
-
-.page-image {
-  width: 100%;
-  max-height: 300px;
-  object-fit: contain;
-  border-radius: 8px;
-  display: block;
-  margin: 0 auto;
-}
-
-.image-upload {
-  display: inline-flex;
-  margin-top: 0.5rem;
-  cursor: pointer;
-}
-
-.page-controls {
+.sidebar-buttons {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-/* --- Gothic / Magical AI Enhancements --- */
-.gothic-glow {
-  background: radial-gradient(circle at top left, #0b0b0d, #141622, #090909);
-  color: #d4e6f3;
-}
-
-.enchanted-title {
-  text-shadow: 0 0 10px #7de0ff, 0 0 30px #4defff;
-  font-family: "Cinzel Decorative", serif;
-  letter-spacing: 1px;
-}
-
-.ai-section {
-  margin-top: 2rem;
-  padding: 1rem;
-  background: rgba(20, 26, 40, 0.7);
-  border: 1px solid #5ecaff;
-  border-radius: 12px;
-  box-shadow: 0 0 20px #5ecaff33;
-}
-
-.ai-button {
-  background: linear-gradient(135deg, #2a7bc1, #62e0ff);
-  border: none;
-  border-radius: 10px;
-  padding: 0.6rem 1.2rem;
-  font-weight: bold;
-  cursor: pointer;
+.sidebar-buttons button {
+  background: #23c3dc;
   color: #fff;
-  box-shadow: 0 0 10px #62e0ff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sidebar-buttons button:hover {
+  background: #2ec6dd;
+}
+
+/* === Toggle Button === */
+.sidebar-toggle-btn {
+  position: absolute;
+  left: 260px;
+  top: 20px;
+  z-index: 3;
+  background: #23c3dc;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.ai-button:disabled {
-  opacity: 0.5;
-  box-shadow: none;
-  cursor: wait;
+.sidebar-toggle-btn:hover {
+  background: #2ec6dd;
 }
 
-.ai-suggestion {
-  background: rgba(10, 15, 25, 0.8);
-  border-left: 3px solid #62e0ff;
-  margin-top: 1rem;
-  padding: 0.7rem;
+.sidebar[style*="width: 0px"] + .sidebar-toggle-btn {
+  left: 10px; /* move toggle when sidebar is hidden */
+}
+
+/* === Book View (Main Content) === */
+.book-view {
+  flex-grow: 1;
+  padding: 40px;
+  overflow-y: auto;
+  z-index: 1;
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(2px);
+  transition: width 0.4s ease;
+}
+
+.page {
+  background: rgba(255, 255, 255, 0.9);
+  color: #222;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  min-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Page controls */
+.page-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.page-controls button {
+  background: #23c3dc;
+  border: none;
   border-radius: 8px;
-  color: #b9ddff;
-  font-style: italic;
-  box-shadow: inset 0 0 10px #62e0ff33;
+  padding: 8px 12px;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.page-controls button:hover {
+  background: #2ec6dd;
+}
+
+/* AI Section */
+.ai-section {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 1rem;
+}
+
+.ai-button {
+  background: #38bad1;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.ai-button:hover {
+  background: #2ec6dd;
+}
+
+
+/* 🌙 HEADER */
+.reader-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 22px;
+  background: rgba(20, 25, 30, 0.85);
+  border-bottom: 1px solid #1a2935;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.08);
+}
+
+.enchanted-title {
+  font-size: 1.6rem;
+  color: #81e9ff;
+  text-shadow: 0 0 6px #00e1ff;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #bcefff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.close-btn:hover {
+  color: #ff7575;
+  transform: rotate(90deg);
+}
+
+/* 📖 MAIN LAYOUT */
+.book-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  max-width: 1200px; /* ⬅️ keeps layout centered */
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 12px;
+}
+
+/* 🧾 SIDEBAR */
+.sidebar {
+  width: 240px; /* ⬅️ smaller sidebar */
+  background: rgba(25, 30, 40, 0.85);
+  border-right: 1px solid rgba(90, 180, 255, 0.2);
+  padding: 14px;
+  overflow-y: auto;
+  backdrop-filter: blur(6px);
+  border-radius: 8px 0 0 8px;
+}
+
+/* ✨ Sidebar Text + Sections */
+.sidebar-section {
+  margin-bottom: 18px;
+}
+
+.sidebar-section h4 {
+  font-size: 0.95rem;
+  color: #7de0ff;
+  border-bottom: 1px solid rgba(90, 180, 255, 0.2);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+.sidebar-section p {
+  color: #b5d7e7;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* 🌈 TAGS */
+.tag-bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.bubble {
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  background: #47b9ff;
+  color: #fff;
+  box-shadow: 0 0 6px rgba(80, 200, 255, 0.4);
+}
+
+
+
+.ai-header {
+  font-size: 1rem;
+  text-align: center;
+  color: #8ae8ff;
+  margin-bottom: 8px;
+}
+
+
+.ai-suggestion {
+  margin-top: 10px;
+  background: rgba(10, 18, 24, 0.8);
+  border-radius: 8px;
+  padding: 8px;
+  color: #cdefff;
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 .apply-ai {
-  background: none;
-  border: 1px solid #62e0ff;
-  color: #62e0ff;
-  padding: 0.3rem 0.8rem;
+  margin-top: 6px;
+  display: block;
+  width: 100%;
+  background: #00c6ff;
+  color: #041015;
+  border: none;
   border-radius: 6px;
-  margin-top: 0.5rem;
+  padding: 5px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  font-weight: bold;
+  font-size: 0.85rem;
+  transition: 0.3s;
 }
-
 .apply-ai:hover {
-  background: #62e0ff22;
-  box-shadow: 0 0 8px #62e0ff;
+  background: #5be2ff;
 }
 
-.enchanted-page {
-  background: linear-gradient(145deg, #0b0f1a, #1b2133);
-  border: 1px solid #4dafff44;
-  box-shadow: 0 0 30px #4dafff22;
-  border-radius: 14px;
-  padding: 1.5rem;
-  transition: 0.5s ease all;
+
+
+/* 📝 Page Writing Area */
+.page-text {
+  width: 100%;
+  height: 70vh;
+  padding: 24px;
+  margin: 20px auto;
+  background: #fffdf9;
+  border: 1px solid #e0dccc;
+  border-radius: 12px;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #333;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  resize: none;
+  outline: none;
+  transition: box-shadow 0.2s ease, border 0.2s ease;
+}
+
+/* When the user clicks or types inside */
+.page-text:focus {
+  border-color: #c3b899;
+  box-shadow: 0 0 0 3px rgba(195, 184, 153, 0.25);
+  background: #fffefc;
+}
+
+/* Subtle scrollbar for long writing sessions */
+.page-text::-webkit-scrollbar {
+  width: 10px;
+}
+
+.page-text::-webkit-scrollbar-thumb {
+  background: #d0c8b0;
+  border-radius: 10px;
+}
+
+.page-text::-webkit-scrollbar-thumb:hover {
+  background: #c3b899;
+}
+
+/* Optional: center it better in wide screens */
+@media (min-width: 800px) {
+  .page-text {
+    max-width: 800px;
+    height: 75vh;
+  }
+}
+
+
+
+
+.page-image {
+  display: block;
+  margin: 10px auto;
+  max-height: 200px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
+}
+
+.image-upload {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: #80e4ff;
+}
+.image-upload input {
+  display: none;
+}
+
+
+
+.page-controls span {
+  color: #9ae8ff;
+  font-size: 0.9rem;
+}
+
+.book-reader {
+  position: relative;
+  margin: 0 auto; /* ✅ centers it */
+  max-width: 900px; /* ✅ limits how wide it can stretch */
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(145deg, #f8f8f8, #eaeaea);
+  color: #111;
+  border-radius: 16px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
+  overflow-y: auto; /* ✅ adds scroll */
+  overflow-x: hidden;
+  padding: 40px 28px;
+  box-sizing: border-box;
+}
+
+/* Scrollbar styling (optional, but looks clean) */
+.book-reader::-webkit-scrollbar {
+  width: 8px;
+}
+.book-reader::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+/* Header */
+.book-reader-header {
+  text-align: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 6px 10px;
+  transition: background 0.2s;
+}
+.close-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Book Cover */
+.book-cover-frame {
+  margin: 0 auto;
+  width: 220px;
+  height: 300px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+.book-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Book Info */
+.book-meta {
+  margin-top: 20px;
+}
+.book-meta h2 {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+.book-meta h4 {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 12px;
+}
+.book-genre-tag {
+  display: inline-block;
+  background: #111;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+/* Description + Tags */
+.book-content {
+  margin-top: 30px;
+  line-height: 1.7;
+  color: #333;
+}
+.tag-section {
+  margin-top: 20px;
+}
+.tag-block h5 {
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+.tag-bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.bubble {
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: #fff;
+}
+
+/* Buttons */
+.reader-buttons {
+  margin-top: 32px;
+  text-align: center;
+}
+.continue-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  background: #3a7bff;
+  color: white;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.continue-btn:hover {
+  background: #2a5ed0;
+}
+
+
+.current-book-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: linear-gradient(90deg, #0a023e, #185591);
+  border-bottom: 1px solid #05d0f3;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.current-book-cover {
+  width: 80px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.current-book-placeholder {
+  width: 800px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  background: #eee;
+  color: #555;
+  border-radius: 8px;
+}
+
+.current-book-info h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.current-book-info p {
+  margin: 4px 0 0;
+  font-size: 0.95rem;
+  color: #666;
 }

@@ -1,0 +1,270 @@
+:root {
+  --bg: #1a3ce605;
+  --card: #ffffff;
+  --muted: #666;
+  --accent: #3b82f6;
+}
+
+/* 🌐 Base App Layout */
+.app {
+  max-width: 1100px;
+  margin: 28px auto;
+  padding: 18px;
+}
+
+h1 {
+  margin: 0 0 12px 0;
+  font-size: 22px;
+}
+
+/* 🎨 Drawing Wrapper */
+.drawing-wrapper {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+  padding: 12px;
+}
+
+/* 🧰 Toolbar */
+.toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.toolbar label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.slide-card img {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.slide-card img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
+
+.toolbar input[type="color"] {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  padding: 0;
+  border: 1px solid #e5e7eb;
+  background: white;
+}
+
+.toolbar button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.18);
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.toolbar button:hover {
+  transform: translateY(-1px);
+  background: #2563eb;
+}
+
+/* 🖼 Canvas Container */
+.canvas-container {
+  border: 1px solid #e6e9f0;
+  border-radius: 8px;
+  overflow: hidden;
+  display: inline-block;
+  background: #e8dfdf;
+}
+
+.drawing-canvas {
+  display: block;
+  touch-action: none;
+  background: #000000;
+  cursor: crosshair;
+}
+
+.size-label {
+  display: inline-block;
+  min-width: 36px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: 6px;
+}
+
+.hint {
+  margin-top: 10px;
+  color: #666;
+  font-size: 13px;
+}
+
+/* 🌈 Drawing Board */
+.drawing-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-y: auto;
+  max-height: 100vh;
+  padding: 1rem;
+  scroll-behavior: smooth;
+}
+
+canvas {
+  border: 2px solid #444;
+  background-color: #000;
+  cursor: crosshair;
+  position: relative;
+  z-index: 1;
+}
+
+/* 🎛 Controls */
+.controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+button {
+  background-color: #1f2937;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #374151;
+}
+
+/* 🧠 AI Preview */
+.ai-preview {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.ai-preview img {
+  border-radius: 8px;
+  margin-top: 8px;
+  max-width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 💡 Floating AI Tools Panel */
+.ai-tools-panel {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  width: 280px;
+  background: #ffffffd9;
+  backdrop-filter: blur(8px);
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 12px 16px;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Collapsed state */
+.ai-tools-panel.collapsed {
+  width: 60px;
+  height: 60px;
+  padding: 8px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Toggle button */
+.ai-tools-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ai-tools-toggle:hover {
+  background: #2563eb;
+}
+
+/* Panel content */
+.ai-tools-content {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Inputs and buttons */
+.ai-tools-content input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 14px;
+}
+
+.ai-tools-content button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ai-tools-content button:hover {
+  background: #1d4ed8;
+}
+
+/* ✨ Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .ai-tools-panel {
+    right: 10px;
+    top: auto;
+    bottom: 20px;
+    width: 90%;
+  }
+}
+
