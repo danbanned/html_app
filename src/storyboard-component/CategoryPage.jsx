@@ -8,7 +8,6 @@ import FloatingForest from "./FloatingForest.jsx";
 import DrawingBoard from "../components/DrawingBoard.jsx";
 import { useStoryCoach } from "../hooks/useStoryCoach.js";
 import { useBooks } from "../components/BookContext.jsx";
-import "..styles/FloatingAIPanel.css";
 import { STATUS } from "react-joyride";
 import { useTutorial } from "../components/TutorialContext.jsx";
 
