@@ -9,7 +9,7 @@ import DrawingBoard from "../components/DrawingBoard.jsx";
 import { useStoryCoach } from "../hooks/useStoryCoach.js";
 import { useBooks } from "../components/BookContext.jsx";
 import "../styles/FloatingAiPanel.css";
-import Joyride, { STATUS } from "react-joyride";
+import { STATUS } from "react-joyride";
 import { useTutorial } from "../components/TutorialContext.jsx";
 
 

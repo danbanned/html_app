@@ -639,3 +639,9 @@ The **Roles** section connects with:
 ### 🖋️ Created by
 **Daniel Johnson**  
 *for the VI Story App Project*
+
+
+| Hook Name          | Purpose                                                                 | Input                                                                                       | Output / Returns                                                  |
+|-------------------|-------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|------------------------------------------------------------------|
+| `useStoryCoach`    | Manages AI chat with writing advice and image concept generation       | `initialBook` object `{ title, genre, description }` or string messages                     | `{ messages, sendMessage, isThinking, images, setBook, latestResponse }` |
+| `useChatCompletion`| Handles API calls to backend `/api/chat` and normalizes responses       | Payload object `{ mode, messages?, bookContext?, userProfile?, chatHistory? }`             | Normalized response based on mode: `{ type, output, imagePrompt }` or `{ type, description, tags, imagePrompt }` |
