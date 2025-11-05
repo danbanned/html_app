@@ -5,6 +5,8 @@ import { useChatCompletion } from "../hooks/useChatCompletion";
 
 // 🌈 BOOK READER PREVIEW (from BookMaker)
 export function BookReader({ book, onClose, onStartReading }) {
+  console.log("📘 BookReader loaded:", book);
+
   return (
     <motion.div
       className="book-reader"
@@ -72,7 +74,10 @@ export function BookReader({ book, onClose, onStartReading }) {
         )}
 
         <div className="reader-buttons">
-          <button className="continue-btn" onClick={() => onStartReading(book)}>
+          <button className="continue-btn" onClick={() => {
+            console.log("▶️ Start reading book:", book);
+            onStartReading(book);
+          }}>
             📖 Start Reading
           </button>
         </div>
@@ -83,6 +88,8 @@ export function BookReader({ book, onClose, onStartReading }) {
 
 // 🧠 FULL PAGE BOOK READER
 export default function ReadYourBook({ book, onClose, onSaveBook, startChapter = 1 }) {
+  console.log("📗 ReadYourBook loaded with book:", book);
+
   const [activePage, setActivePage] = useState(0);
   const [aiLoading, setAILoading] = useState(false);
   const [aiSuggestion, setAISuggestion] = useState("");
@@ -104,21 +111,37 @@ export default function ReadYourBook({ book, onClose, onSaveBook, startChapter =
       : [{ text: "Empty chapter", image: "" }]),
   ]);
 
-  const printmessage = () => alert("Chapters coming soon");
+  console.log("📄 Initial pages:", pages);
+
+  const printmessage = () => {
+    console.log("📘 Chapters button clicked — chapters feature not yet implemented");
+    alert("Chapters coming soon");
+  };
 
   const addPage = () => {
-    setPages((prev) => [...prev, { text: "", image: null }]);
+    console.log("➕ Adding new page...");
+    setPages((prev) => {
+      const updated = [...prev, { text: "", image: null }];
+      console.log("📄 Updated pages:", updated);
+      return updated;
+    });
     setActivePage(pages.length);
   };
 
   const deletePage = () => {
+    console.log("🗑️ Deleting page", activePage);
     if (pages.length === 1) return;
-    setPages((prev) => prev.filter((_, i) => i !== activePage));
+    setPages((prev) => {
+      const updated = prev.filter((_, i) => i !== activePage);
+      console.log("📄 Updated pages after delete:", updated);
+      return updated;
+    });
     setActivePage((prev) => (prev > 0 ? prev - 1 : 0));
   };
 
   const saveBook = () => {
     const updatedBook = { ...book, chapters: pages.slice(1) };
+    console.log("💾 Saving book:", updatedBook);
     onSaveBook(updatedBook);
     alert("✅ Book saved successfully!");
   };
@@ -128,12 +151,14 @@ export default function ReadYourBook({ book, onClose, onSaveBook, startChapter =
   }, [pages]);
 
   const handleTextChange = (index, value) => {
+    console.log(`✏️ Updating text for page ${index}:`, value.slice(0, 50), "...");
     const updated = [...pages];
     updated[index].text = value;
     setPages(updated);
   };
 
   const handleImageChange = (index, file) => {
+    console.log(`🖼️ Image upload detected on page ${index}:`, file?.name);
     const reader = new FileReader();
     reader.onload = () => {
       const updated = [...pages];
@@ -143,7 +168,52 @@ export default function ReadYourBook({ book, onClose, onSaveBook, startChapter =
     reader.readAsDataURL(file);
   };
 
-  const applyAISuggestion = () => {
+  
+  const handleAIGenerate = async () => {
+  console.log("🔮 AI Generation started for page", activePage);
+  try {
+    setAILoading(true);
+
+    // Clean the current page text to remove any placeholders
+    const currentText = pages[activePage].text.replace(/✨ No suggestion returned —.*/g, "").trim() || "Once upon a time...";
+
+    const payload = {
+      mode: "storyContinuation",
+      bookContext: {
+        title: book.title || "Untitled",
+        genre: book.genre || "General",
+        chapter: activePage + 1,
+        text: currentText,
+      },
+    };
+
+    console.log("🔮 Sending to AI:", payload);
+
+    const aiResponse = await chatMutation.mutateAsync(payload);
+
+    console.log("🤖 Raw AI Response:", aiResponse);
+
+    // Safely extract content
+    const content =
+      aiResponse?.content?.trim() ||
+      "🤔 The AI could not generate a continuation. Try again!";
+
+    setAISuggestion(content);
+
+    // Optional: log image prompt
+    if (aiResponse?.imagePrompt) {
+      console.log("🎨 AI Image Prompt:", aiResponse.imagePrompt);
+    }
+  } catch (err) {
+    console.error("❌ AI generation failed:", err);
+    setAISuggestion("⚠️ The AI could not generate a continuation right now.");
+  } finally {
+    setAILoading(false);
+  }
+};
+
+const applyAISuggestion = () => {
+    console.log("📜 Applying AI suggestion:", aiSuggestion);
     if (!aiSuggestion) return;
     const updated = [...pages];
     updated[activePage].text += `\n\n${aiSuggestion}`;
@@ -151,33 +221,16 @@ export default function ReadYourBook({ book, onClose, onSaveBook, startChapter =
     setAISuggestion("");
   };
 
-  const handleAIGenerate = async () => {
-    try {
-      setAILoading(true);
-      const currentText = pages[activePage].text;
 
-      const aiResponse = await chatMutation.mutateAsync({
-        mode: "storyContinuation",
-        title: book.title,
-        chapter: activePage,
-        text: currentText,
-      });
 
-      if (typeof aiResponse === "string") {
-        setAISuggestion(aiResponse);
-      } else if (aiResponse?.content) {
-        setAISuggestion(aiResponse.content);
-        if (aiResponse.summary) console.log("📘 AI Summary:", aiResponse.summary);
-      } else {
-        setAISuggestion("✨ No suggestion returned — try again!");
-      }
-    } catch (err) {
-      console.error("❌ AI generation failed:", err);
-      setAISuggestion("⚠️ The AI could not generate a continuation right now.");
-    } finally {
-      setAILoading(false);
-    }
-  };
+  // Debug sidebar toggle and page changes
+  useEffect(() => {
+    console.log("📖 Active page changed:", activePage, pages[activePage]);
+  }, [activePage]);
+
+  useEffect(() => {
+    console.log("🧩 Sidebar visibility:", sidebarOpen);
+  }, [sidebarOpen]);
 
   return (
     <motion.div
@@ -279,7 +332,13 @@ export default function ReadYourBook({ book, onClose, onSaveBook, startChapter =
         </motion.div>
 
         {/* 🔘 Sidebar Toggle Button */}
-        <button className="sidebar-toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+        <button
+          className="sidebar-toggle-btn"
+          onClick={() => {
+            console.log("🪟 Sidebar toggle clicked:", !sidebarOpen);
+            setSidebarOpen(!sidebarOpen);
+          }}
+        >
           {sidebarOpen ? "❯" : "❮"}
         </button>
 
@@ -325,16 +384,36 @@ export default function ReadYourBook({ book, onClose, onSaveBook, startChapter =
                 )}
                 <label className="image-upload">
                   📸 Add Image
-                  <input type="file" accept="image/*" onChange={(e) => handleImageChange(activePage, e.target.files[0])} />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(activePage, e.target.files[0])}
+                  />
                 </label>
               </motion.div>
             )}
           </AnimatePresence>
 
           <div className="page-controls">
-            <button disabled={activePage === 0} onClick={() => setActivePage((p) => p - 1)}>◀ Prev</button>
+            <button
+              disabled={activePage === 0}
+              onClick={() => setActivePage((p) => {
+                console.log("⬅️ Prev Page clicked");
+                return p - 1;
+              })}
+            >
+              ◀ Prev
+            </button>
             <span>Page {activePage + 1} of {pages.length}</span>
-            <button disabled={activePage === pages.length - 1} onClick={() => setActivePage((p) => p + 1)}>Next ▶</button>
+            <button
+              disabled={activePage === pages.length - 1}
+              onClick={() => setActivePage((p) => {
+                console.log("➡️ Next Page clicked");
+                return p + 1;
+              })}
+            >
+              Next ▶
+            </button>
           </div>
         </motion.div>
       </div>

@@ -4,17 +4,86 @@ import "../styles/BookMaker.css";
 import EditBookPanel from "./EditBookPanel.jsx";
 import { saveBooks, getBooks, deleteBook } from "../utils/indexedDB.js";
 import AddBookPanel from "./AddBookPanel.jsx";
-import ReadYourBook, { BookReader } from "../imagine-components/ReadYourBook.jsx";
+import  ReadYourBook, {BookReader} from "./ReadYourBook.jsx";
+import Joyride from "react-joyride"; // ✅ guided tour
+import { STATUS } from "react-joyride"; // 👈 make sure you import STATUS
+import { useTutorial } from "../components/TutorialContext";
+
 
 // 📚 BOOK SHELF (shows books + keeps empty placeholders visible)
-function BookShelf({ books, onOpen, onEmptySlotClick, onEdit, onDelete }) {
-  const totalSlots = 12; // how many slots should be visible
+function BookShelf({ books, onOpen, onEmptySlotClick, onEdit, onDelete, onAddBook }) {
+  /* ============================================================
+   * 🧩 INITIAL STATE
+   * ============================================================ */
+
+  const totalSlots = 12;
   const filled = books.filter(Boolean);
   const emptySlots = totalSlots - filled.length;
+  const { storyTourDone, designTourDone, setDesignTourDone } = useTutorial();
+  const [run, setRun] = useState(false);
+
+
+
+   /* ============================================================
+     * 📖 AUTO-START TUTORIAL (triggered after StoryPage finishes)
+     * ============================================================ */
   
+     useEffect(() => {
+    // Only start if story tour just finished and this one hasn’t run yet
+    if (storyTourDone && !designTourDone) {
+      setRun(true);
+    }
+  }, [storyTourDone, designTourDone]);
+  
+    const handleJoyrideCallback = (data) => {
+      const { status } = data;
+      if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+        setRun(false);
+        setDesignTourDone(true);
+      }
+    };
+    
+    // 🧭 Joyride tutorial steps
+  
+    
+    const steps = [
+      {
+        target: ".sidebar",
+        content: "Welcome to your Library! This is where all your books live.",
+        placement: "right",
+      },
+      {
+        target: ".slot-overlay",
+        content: "Each slot holds a book. Click + to create or edit one.",
+        placement: "top",
+      },
+      {
+        target: ".main-content",
+        content: "Here’s your design area — this is where you imagine and create.",
+        placement: "top",
+      },
+      {
+        target: ".imagine-container",
+        content: "You can use ☰ to reopen the Library sidebar and x to close it anytime.",
+        placement: "right",
+      },
+    ];
 
   return (
     <div className="book-shelf">
+
+       {/* 🧭 Auto-start Joyride tutorial */}
+      <>
+      <Joyride
+        steps={steps}
+        run={run}
+        continuous
+        callback={handleJoyrideCallback}
+        showSkipButton
+        styles={{ options: { zIndex: 10000 } }}
+      />
+      {/* your existing page JSX stays exactly as it is */}
+    </>
       {/* Render filled book cards */}
       {filled.map((book) => (
         <motion.div
@@ -33,50 +102,43 @@ function BookShelf({ books, onOpen, onEmptySlotClick, onEdit, onDelete }) {
           {book.coverImage && <img src={book.coverImage} alt={book.title} />}
 
           <div className="book-card-actions">
-            <button
-              className="edit-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onEdit(book);
-              }}
-              title="Edit Book"
-            >
-              ✎
-            </button>
-            <button
-              className="delete-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(book.id);
-              }}
-              title="Delete Book"
-            >
-              🗑
-            </button>
+            <button className="edit-btn" onClick={(e) => { e.stopPropagation(); onEdit(book); }}>✎</button>
+            <button className="delete-btn" onClick={(e) => { e.stopPropagation(); onDelete(book.id); }}>🗑</button>
           </div>
 
-          <div className="book-details" 
-
-                onClick={() => {
-                    onOpen(book);          // 👈 opens the book reader or editor
-                    onOpenBook(book); // 👈 trigger the parent's sidebar close
-                    handleSomething();
-                  }}
-               >
+          <div className="book-details" onClick={() => onOpen(book)}>
             <h3>{book.title}</h3>
             <p>{book.author}</p>
             <p>{book.genre}</p>
-            {book.chapters && book.chapters.length > 0 && (
-              <span className="chapter-count">
-                📖 {book.chapters.length} Chapters
-              </span>
+            {book.chapters?.length > 0 && (
+              <span className="chapter-count">📖 {book.chapters.length} Chapters</span>
             )}
           </div>
         </motion.div>
       ))}
 
-      {/* Render duplicated empty placeholder slots */}
-      {Array.from({ length: emptySlots > 0 ? emptySlots : 0 }).map((_, index) => (
+      {/* 🆕 Add Book card */}
+      <motion.div
+        key="add-book-tile"
+        className="book-card add-book-tile"
+        onClick={onAddBook}
+        whileHover={{
+          rotateY: 10,
+          rotateX: -10,
+          scale: 1.05,
+          boxShadow: "0 10px 20px rgba(0,0,0,0.3)",
+        }}
+        transition={{ type: "spring", stiffness: 200, damping: 10 }}
+      >
+        <div className="book-shine"></div>
+        <div className="placeholder-inner">
+          <div className="plus">＋</div>
+          <div className="placeholder-text">Add Book</div>
+        </div>
+      </motion.div>
+
+      {/* Render remaining empty slots */}
+      {Array.from({ length: emptySlots > 0 ? emptySlots - 1 : 0 }).map((_, index) => (
         <motion.div
           key={`empty-${index}`}
           className="book-card book-placeholder"
@@ -92,7 +154,7 @@ function BookShelf({ books, onOpen, onEmptySlotClick, onEdit, onDelete }) {
           <div className="book-shine"></div>
           <div className="placeholder-inner">
             <div className="plus">＋</div>
-            <div className="placeholder-text">Add a book</div>
+            <div className="placeholder-text">Empty Slot</div>
           </div>
         </motion.div>
       ))}
@@ -192,17 +254,20 @@ export default function BookMaker({ books = [], setBooks, setSidebarOpen }) {
             book={activeBook}
             onClose={() => setActiveBook(null)}
             onStartReading={(book) => {
-            setReadingBook(book)}}
+            setReadingBook(book)
+          
+          }}
           />
         ) : (
           <BookShelf
-            key="bookshelf"
-            books={books}
-            onOpen={setActiveBook}
-            onEmptySlotClick={() => setAddingBook(true)} // ✅ open AddBookPanel
-            onEdit={(book) => setEditingBook(book)}
-            onDelete={handleDeleteBook}
-          />
+              key="bookshelf"
+              books={books}
+              onOpen={setActiveBook}
+              onEdit={(book) => setEditingBook(book)}
+              onDelete={handleDeleteBook}
+              onAddBook={() => setAddingBook(true)} // ✅ the new "Add Book" tile
+            />
+
         )}
       </AnimatePresence>
 
@@ -221,7 +286,7 @@ export default function BookMaker({ books = [], setBooks, setSidebarOpen }) {
         {addingBook && (
           <AddBookPanel
             key="add-book"
-            onAddBook={async (newBook) => {  // ✅ renamed from onSave → onAddBook
+            onAddBook={async (newBook,) => {  // ✅ renamed from onSave → onAddBook
               const updatedBooks = [...books, newBook];
               setBooks(updatedBooks);
               await saveBooks(updatedBooks);

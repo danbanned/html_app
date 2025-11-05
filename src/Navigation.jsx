@@ -4,10 +4,12 @@ import "./styles/Navigation.css";
 import StoryBoard from "./pages/MainPage.jsx";
 import StoryboardPage from './pages/StoryboardPage.jsx'
 import CategoryPage from "./storyboard-component/CategoryPage.jsx";
+import { TutorialProvider } from "./components/TutorialContext.jsx";
 
 
 export default function MainPage() {
   return (
+    <TutorialProvider>
     <BrowserRouter>
       <nav className="navbar">
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -27,7 +29,7 @@ export default function MainPage() {
         <Route path="/category/:category" element={<CategoryPage />} />
       </Routes>
     </BrowserRouter>
-
+    </TutorialProvider>
   );
 }
 

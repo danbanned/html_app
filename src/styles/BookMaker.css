@@ -972,3 +972,23 @@
   background-color: rgba(220, 53, 69, 1);
 }
 
+.add-book-tile {
+  background-image: url(public/BookGuide.webp);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.4rem;
+  flex-direction: column;
+}
+
+.add-book-tile .plus {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.add-book-tile .placeholder-text {
+  font-size: 1rem;
+  opacity: 0.9;
+}

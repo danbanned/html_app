@@ -168,13 +168,13 @@
 .close-btn {
   background: none;
   border: none;
-  color: #bcefff;
+  color: #2586a3;
   font-size: 1.3rem;
   cursor: pointer;
   transition: 0.3s;
 }
 .close-btn:hover {
-  color: #ff7575;
+  color: #848080;
   transform: rotate(90deg);
 }
 
@@ -388,7 +388,7 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(212, 153, 153, 0.8);
   border: none;
   font-size: 1.4rem;
   cursor: pointer;

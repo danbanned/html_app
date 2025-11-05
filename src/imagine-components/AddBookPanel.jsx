@@ -3,6 +3,10 @@ import { motion } from "framer-motion";
 import "../styles/AddBookPanel.css";
 import { useChatCompletion } from "../hooks/useChatCompletion";
 import { FaInfoCircle } from "react-icons/fa";
+import { useBooks } from "../components/BookContext";
+
+
+
 
 export default function AddBookPanel({ existingBook = null, slotIndex, onAddBook, onClose }) {
   const [title, setTitle] = useState(existingBook?.title || "");
@@ -13,6 +17,9 @@ export default function AddBookPanel({ existingBook = null, slotIndex, onAddBook
   const [coverColor, setCoverColor] = useState(existingBook?.coverColor || "#4a90e2");
   const [showGuide, setShowGuide] = useState(false);
 
+
+
+const { books, addBook } = useBooks();
 
   const [tags, setTags] = useState(existingBook?.tags || {
     characters: [],
@@ -79,6 +86,8 @@ export default function AddBookPanel({ existingBook = null, slotIndex, onAddBook
       return;
     }
 
+    
+
     setIsGenerating(true);
     try {
       const { mutateAsync } = chat;
@@ -129,9 +138,15 @@ export default function AddBookPanel({ existingBook = null, slotIndex, onAddBook
       chapters: existingBook?.chapters || [],
       tags,
     };
-
+    
     onAddBook(newBook, slotIndex);
+    addBook(newBook);
+    
   };
+
+ useEffect(() => {
+    console.log("📚 BookContext Updated:", books);
+  }, [books]);
 
   useEffect(() => {
     setTitle(existingBook?.title || "");
@@ -148,6 +163,7 @@ export default function AddBookPanel({ existingBook = null, slotIndex, onAddBook
       mood: [],
       connections: [],
     });
+    
   }, [existingBook]);
 
   return (
@@ -173,6 +189,16 @@ export default function AddBookPanel({ existingBook = null, slotIndex, onAddBook
           <FaInfoCircle /> {showGuide ? "Hide Guide" : "Show Guide"}
         </button>
       </div>
+
+        <div>
+          <button
+            onClick={() => addBook({ id: Date.now(), title: "Test Book" })}
+          >
+            ➕ Add Test Book
+          </button>
+
+          
+        </div>
 
       <div className="field">
         <label>Title</label>

@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "../styles/ImagineDesign.css";
+import { getBooks, saveBooks } from "../utils/indexedDB.js";
+import Joyride, { STATUS } from "react-joyride";
+import { useTutorial } from "../components/TutorialContext";
+import {useNavigate} from "react-router-dom";
+
+
 import BookMaker from "../imagine-components/BookMaker.jsx";
 import AddBookPanel from "../imagine-components/AddBookPanel.jsx";
-import ReadYourBook from "../imagine-components/ReadYourBook.jsx";
-import { BookReader } from "../imagine-components/ReadYourBook.jsx"; // ✅ Import the preview
+import ReadYourBook, { BookReader } from "../imagine-components/ReadYourBook.jsx";
 
 export default function ImagineDesign() {
   const SLOTS = 2;
@@ -12,22 +17,102 @@ export default function ImagineDesign() {
   /* ============================================================
    * 🧩 INITIAL STATE
    * ============================================================ */
-  const [books, setBooks] = useState(() => {
-    try {
-      const saved = localStorage.getItem("imagine_books_v1");
-      if (!saved) return Array(SLOTS).fill(null);
-      const parsed = JSON.parse(saved);
-      return Array.isArray(parsed)
-        ? [...parsed, ...Array(SLOTS).fill(null)].slice(0, SLOTS)
-        : Array(SLOTS).fill(null);
-    } catch {
-      return Array(SLOTS).fill(null);
+  const [books, setBooks] = useState(Array(SLOTS).fill(null));
+  const { storyTourDone, designTourDone, setDesignTourDone } = useTutorial();
+const [run, setRun] = useState(true);
+  const navigation = useNavigate();
+
+  /* ============================================================
+   * 📖 AUTO-START TUTORIAL (triggered after StoryPage finishes)
+   * ============================================================ */
+useEffect(() => {
+    if (storyTourDone && !designTourDone) {
     }
-  });
+  }, [storyTourDone, designTourDone]);
+
+  const handleJoyridecallback = (data) => {
+  const { status, index, action } = data;
+   console.log("🎯 Joyride data:", data);
+
+  // When the user reaches the last step and clicks "Next"
+  if (action === "next" && index === steps.length - 1) {
+    console.log("🎯 Finished last Joyride step — redirecting to /category/theme");
+    setDesignTourDone(true);
+    navigation("/category/theme");
+  }
+
+  // Optional: handle if the user skips
+  if ([STATUS.SKIPPED].includes(status)) {
+    console.log("⚠️ User skipped tutorial, redirecting anyway...");
+    setDesignTourDone(true);
+    navigation("/category/theme");
+  }
+};
+  
+  // 🧭 Joyride tutorial steps
+
+  
+  const steps = [
+    {
+      target: ".sidebar",
+      content: "Welcome to your Library! This is where all your books live.",
+      placement: "right",
+    },
+    {
+      target: ".slot-overlay",
+      content: "Each slot holds a book. Click + to create or edit one.",
+      placement: "top",
+    },
+    {
+      target: ".main-content",
+      content: "Here’s your design area — this is where you imagine and create.",
+      placement: "top",
+    },
+    {
+      target: ".imagine-container",
+      content: "You can use ☰ to reopen the Library sidebar and x to close it anytime.",
+      placement: "right",
+    },
+  ];
+ 
+
+  /* ============================================================
+   * 📚 BOOK STORAGE (unchanged)
+   * ============================================================ */
+  useEffect(() => {
+    (async () => {
+      try {
+        const storedBooks = await getBooks();
+        if (storedBooks && storedBooks.length > 0) {
+          setBooks([...storedBooks, ...Array(SLOTS).fill(null)].slice(0, SLOTS));
+          console.log("📚 Loaded books from IndexedDB:", storedBooks);
+        } else {
+          console.log("📭 No books found in IndexedDB, starting fresh.");
+        }
+      } catch (err) {
+        console.error("⚠️ Failed to load books from IndexedDB:", err);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem("imagine_books_v1", JSON.stringify(books));
+    if (books && books.length > 0) {
+      saveBooks(books)
+        .then(() => console.log("💾 Books saved to IndexedDB"))
+        .catch((err) => console.error("⚠️ Failed to save books:", err));
+    }
   }, [books]);
+
+  useEffect(() => {
+    getBooks()
+      .then((storedBooks) => {
+        if (storedBooks.length > 0) {
+          setBooks(storedBooks);
+          console.log("📚 Loaded books from IndexedDB");
+        }
+      })
+      .catch((err) => console.error("⚠️ Could not load books:", err));
+  }, []);
 
   /* ============================================================
    * ⚙️ UI STATES
@@ -36,8 +121,8 @@ export default function ImagineDesign() {
   const [activeSlotIndex, setActiveSlotIndex] = useState(null);
   const [editingBook, setEditingBook] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [previewBook, setPreviewBook] = useState(null); // 👁 Preview (BookReader)
-  const [readingBook, setReadingBook] = useState(null); // 📖 Full Reader (ReadYourBook)
+  const [previewBook, setPreviewBook] = useState(null);
+  const [readingBook, setReadingBook] = useState(null);
 
   /* ============================================================
    * 🪟 PANEL HANDLERS
@@ -78,9 +163,9 @@ export default function ImagineDesign() {
     closeAddPanel();
   };
 
-  const handleDeleteBook = (bookId) => {
-    if (!confirm("Delete this book?")) return;
-    setBooks((prev) => prev.map((b) => (b && b.id === bookId ? null : b)));
+  const handleDeleteBook = async (bookId) => {
+    setBooks((prev) => prev.filter((b) => b.id !== bookId));
+    await deleteBook(bookId);
   };
 
   const handleSaveBook = (updatedBook) => {
@@ -93,12 +178,10 @@ export default function ImagineDesign() {
    * ============================================================ */
   const openPreviewForBook = (book) => setPreviewBook(book);
   const closePreview = () => setPreviewBook(null);
-
   const startReadingBook = (book) => {
-    setPreviewBook(null); // close preview
-    setReadingBook(book); // open full reader
+    setPreviewBook(null);
+    setReadingBook(book);
   };
-
   const closeReader = () => setReadingBook(null);
 
   /* ============================================================
@@ -111,7 +194,21 @@ export default function ImagineDesign() {
    * ============================================================ */
   return (
     <div className="imagine-container">
-      {/* ========== Book Reader Preview ========== */}
+      {/* 🧭 Auto-start Joyride tutorial */}
+      {console.log("✅ Joyride rendered")}
+
+      <Joyride
+        steps={steps}
+        run={run}
+        continuous
+        showSkipButton
+        disableBeacon
+        callback={handleJoyridecallback}
+        styles={{ options: { zIndex: 10000 } }}
+      />
+      {/* your existing page JSX stays exactly as it is */}
+
+      {/* ========== Book Preview ========== */}
       <AnimatePresence>
         {previewBook && (
           <motion.div
@@ -123,17 +220,14 @@ export default function ImagineDesign() {
           >
             <BookReader
               book={previewBook}
-              onClose={() => {
-                {closePreview};
-                {closeAddPanel};
-              }}
+              onClose={closePreview}
               onStartReading={startReadingBook}
             />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ========== Full Reader (Writing Mode) ========== */}
+      {/* ========== Full Reader ========== */}
       <AnimatePresence>
         {readingBook && (
           <motion.div
@@ -170,14 +264,6 @@ export default function ImagineDesign() {
               <div className="sidebar-content">
                 <div className="slot-toolbar">
                   <strong>Library</strong>
-                  <button
-                    className="addbookbutton"
-                    onClick={() =>
-                      openAddPanelForSlot(books.findIndex((b) => b === null) || 0)
-                    }
-                  >
-                    ＋ Add Book
-                  </button>
                 </div>
 
                 <div className="slot-grid">
@@ -185,10 +271,7 @@ export default function ImagineDesign() {
                     <button
                       key={i}
                       className="slot-btn full-cover"
-                      onClick={() => {
-                        {closeAddPanel};
-                        b ? openPreviewForBook(b) : openAddPanelForSlot(i)
-                      }}
+                      onClick={() => (b ? openPreviewForBook(b) : openAddPanelForSlot(i))}
                     >
                       {b ? (
                         <>
@@ -217,7 +300,7 @@ export default function ImagineDesign() {
         </AnimatePresence>
       )}
 
-      {/* ========== Sidebar Toggle ========== */}
+      {/* Sidebar Toggle */}
       {!sidebarOpen && !previewBook && !readingBook && (
         <motion.button
           className="open-sidebar-btn"
@@ -229,7 +312,7 @@ export default function ImagineDesign() {
         </motion.button>
       )}
 
-      {/* ========== Main Content ========== */}
+      {/* Main Area (BookMaker Grid) */}
       {!previewBook && !readingBook && (
         <motion.main
           className="main-content"
@@ -237,21 +320,20 @@ export default function ImagineDesign() {
           animate={{ y: 0, opacity: 1 }}
         >
           <BookMaker
-        books={books}
-        setBooks={setBooks}
-        onEmptySlotClick={openAddPanelForSlot}
-        onEditBook={openEditPanelForBook}
-        onDeleteBook={handleDeleteBook}
-        onOpenBook={(book) => {
-          setSidebarOpen(false);      // 👈 CLOSE the sidebar
-          setPreviewBook(book);       // 👈 OPEN the preview
-        }}
-      />
-
+            books={books}
+            setBooks={setBooks}
+            onEmptySlotClick={openAddPanelForSlot}
+            onEditBook={openEditPanelForBook}
+            onDeleteBook={handleDeleteBook}
+            onOpenBook={(book) => {
+              setSidebarOpen(false);
+              setPreviewBook(book);
+            }}
+          />
         </motion.main>
       )}
 
-      {/* ========== Add/Edit Book Panel ========== */}
+      {/* Add/Edit Book Panel */}
       <AnimatePresence>
         {showAddPanel && !previewBook && !readingBook && (
           <AddBookPanel

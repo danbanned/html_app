@@ -1,5 +1,5 @@
 
-.ai-helper {
+.category-page {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -16,7 +16,7 @@
   gap: 8px;
 }
 
-.ai-helper input {
+.ai-response input {
   background: #b6beb6;
   color: white;
   border: none;
@@ -24,10 +24,114 @@
   border-radius: 6px;
 }
 
-.ai-helper button {
+.ai-response button {
   background: #19d400;
   border: none;
   padding: 8px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.ai-chat {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+
+.chat-bubble {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+  transition: all 0.2s ease;
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background-color: #2563eb;
+  color: white;
+}
+
+.chat-bubble.assistant {
+  background: #f3f4f6;
+  align-self: flex-start;
+}
+
+.category-container {
+  display: flex;
+  height: 100vh;
+  color: white;
+}
+
+
+.category-page {
+  flex: 1;
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.story-list {
+  flex: 2;
+}
+
+.slides-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.ai-panel {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.ai-text {
+  margin-top: 1rem;
+  line-height: 1.5;
+}
+
+.suggested-images img {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+
+.story-coach-panel {
+  flex: 0 0 30%; /* fixed width on the side */
+  max-width: 400px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  overflow-y: auto;
+  height: 80vh;
+}
+
+.category-content {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.coach-response {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.suggested-images img {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 10px;
+  object-fit: cover;
 }
