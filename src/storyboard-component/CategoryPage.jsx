@@ -257,21 +257,163 @@ export default function CategoryPage() {
   };
 
   function StoryDrawingGuide({ onClose }) {
+    const [tab, setTab] = useState("overview");
+
     return (
-      <div className="story-guide">
-        <button className="close-guide" onClick={onClose}>✖</button>
-        <h2>🎨 Story Moment Guide</h2>
-        <p className="intro">
-          This helps you <strong>draw and describe</strong> your story moments, one scene at a time.
-        </p>
-        <ul className="guide-steps">
-          <li><strong>1️⃣ Visualize the Scene —</strong> Sketch the moment.</li>
-          <li><strong>2️⃣ Add Emotion —</strong> Capture who’s there & how they feel.</li>
-          <li><strong>3️⃣ Describe the Action —</strong> Write the key moment below.</li>
-        </ul>
+    <div className="guide-overlay" onClick={onClose}>
+      <div className="guide-modal" onClick={(e) => e.stopPropagation()}>
+        
+        {/* Close Button */}
+        <button className="guide-close" onClick={onClose}>✕</button>
+
+        {/* Header */}
+        <h2 className="guide-title">📘 How to Create Your First Storyboard</h2>
+
+        {/* Tab Menu */}
+        <div className="guide-tabs">
+          <button 
+            className={tab === "overview" ? "active" : ""}
+            onClick={() => setTab("overview")}
+          >
+            ⭐ Overview
+          </button>
+          <button 
+            className={tab === "theme" ? "active" : ""}
+            onClick={() => setTab("theme")}
+          >
+            🎨 Theme
+          </button>
+          <button 
+            className={tab === "characters" ? "active" : ""}
+            onClick={() => setTab("characters")}
+          >
+            🧍 Characters
+          </button>
+          <button 
+            className={tab === "scene" ? "active" : ""}
+            onClick={() => setTab("scene")}
+          >
+            🎬 Scene
+          </button>
+          <button 
+            className={tab === "setting" ? "active" : ""}
+            onClick={() => setTab("setting")}
+          >
+            🌄 Setting
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="guide-content fade-in">
+
+          {/* OVERVIEW TAB */}
+          {tab === "overview" && (
+            <div>
+              <h3>✨ Getting Started</h3>
+              <p>
+                The Storyboard Creator helps you build a <strong>visual story</strong> by drawing images 
+                and adding descriptions that explain each scene.
+              </p>
+
+              <div className="guide-step">
+                <span className="step-icon">1️⃣</span>
+                <div>
+                  <h4>Choose a Category</h4>
+                  <p>On the homepage, select Theme, Characters, Scene, or Setting.</p>
+                </div>
+              </div>
+
+              <div className="guide-step">
+                <span className="step-icon">2️⃣</span>
+                <div>
+                  <h4>Draw Your Visual</h4>
+                  <p>Use the built-in drawing canvas to illustrate your frame.</p>
+                </div>
+              </div>
+
+              <div className="guide-step">
+                <span className="step-icon">3️⃣</span>
+                <div>
+                  <h4>Add a Description</h4>
+                  <p>Describe what is happening in your drawing or what it represents.</p>
+                </div>
+              </div>
+
+              <div className="guide-step">
+                <span className="step-icon">4️⃣</span>
+                <div>
+                  <h4>Save Your Frame</h4>
+                  <p>Your saved drawings become panels in your storyboard.</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* THEME TAB */}
+          {tab === "theme" && (
+            <div>
+              <h3>🎨 Theme</h3>
+              <p>The theme introduces the big idea of your story.</p>
+              <p>You can draw:</p>
+              <ul>
+                <li>A symbol that represents your story</li>
+                <li>A mood board or color palette</li>
+                <li>An opening scene or key visual</li>
+              </ul>
+              <p>Then add a description that summarizes the overall story direction.</p>
+            </div>
+          )}
+
+          {/* CHARACTERS TAB */}
+          {tab === "characters" && (
+            <div>
+              <h3>🧍 Characters</h3>
+              <p>Create your character visuals: appearance, style, poses, or expressions.</p>
+              <p>In the description, describe:</p>
+              <ul>
+                <li>Who they are</li>
+                <li>Their personality</li>
+                <li>Their role in the story</li>
+              </ul>
+            </div>
+          )}
+
+          {/* SCENE TAB */}
+          {tab === "scene" && (
+            <div>
+              <h3>🎬 Scene</h3>
+              <p>Scenes are the most important moments in your story.</p>
+              <p>You can draw:</p>
+              <ul>
+                <li>A key action moment</li>
+                <li>A conversation between characters</li>
+                <li>A dramatic reveal</li>
+              </ul>
+              <p>The description should explain what is happening in the scene.</p>
+            </div>
+          )}
+
+          {/* SETTING TAB */}
+          {tab === "setting" && (
+            <div>
+              <h3>🌄 Setting</h3>
+              <p>Design the world where your story takes place.</p>
+              <p>Draw any environment:</p>
+              <ul>
+                <li>Fantasy forest</li>
+                <li>Futuristic city</li>
+                <li>School hallway</li>
+                <li>Outer space</li>
+              </ul>
+              <p>Then describe the atmosphere, time period, or special features.</p>
+            </div>
+          )}
+        </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   return (
     <div className="category-layout">

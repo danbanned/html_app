@@ -28,6 +28,7 @@ export default function StoryboardPage() {
       case "setting":
         return <div className="section">🌄 Describe or draw your story’s setting.</div>;
       default:
+        
         return (
           <div className="storyboard-boxes">
             {categories.map((cat) => (

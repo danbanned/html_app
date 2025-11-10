@@ -17,7 +17,7 @@
     "express": "^5.1.0",
     "localforage": "^1.10.0",
     "node-fetch": "^3.3.2",
-    "openai": "^6.7.0",
+    "openai": "^6.8.1",
     "react-router-dom": "^7.9.4"
   },
   "devDependencies": {
