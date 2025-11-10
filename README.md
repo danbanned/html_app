@@ -17,12 +17,33 @@ git clone https://github.com/yourusername/vi-storyboard-app.git
 
 # 2. Install dependencies (both client & server)
 npm install
+npm install react react-dom
+npm install -D vite
+npm install framer-motion
+npm install axios
+npm install lucide-react
+npm install clsx
+npm install tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+npm install eslint eslint-plugin-react eslint-plugin-react-hooks
+
+# 2.2 install api and ai dependecies
+
+npm install express cors dotenv openai
+npm install express dotenv openai
+npm install cors nodemon body-parser
+npm init -y
+npm install --save-dev nodemon
+
+
+
 
 # 3. Secure your API key (in the backend root)
 echo "OPENAI_API_KEY=sk-your-secret-key-here" > .env
 
 # 4. Run the development servers
 npm run dev
+
 
 
 # 4️⃣ Open in your browser

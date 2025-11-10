@@ -19,7 +19,7 @@ export default function ImagineDesign() {
    * ============================================================ */
   const [books, setBooks] = useState(Array(SLOTS).fill(null));
   const { storyTourDone, designTourDone, setDesignTourDone } = useTutorial();
-const [run, setRun] = useState(true);
+  const [run, setRun] = useState(true);
   const navigation = useNavigate();
 
   /* ============================================================

@@ -1,14 +1,17 @@
 import "../styles/MainPage.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Joyride, { STATUS } from "react-joyride";
 import { useTutorial } from "../components/TutorialContext";
+import { Sliders } from "lucide-react";
 
 
 export default function StoryBoard() {
   const navigation = useNavigate();
   const { setStoryTourDone } = useTutorial();
   const [guidepagetrigger,setguidepagetrigger] = useState(null)
+
+  
 
   const [state, setState] = useState({
     run: false,
@@ -37,22 +40,28 @@ export default function StoryBoard() {
           "Access your saved content and refine your storybook elements here.",
       },
       {
-        target: "#USEI",
+        target: ".boximagine",
         title: "Imagine Design",
         content:
-          "Use this to build visuals and creative imagery for your storybook.",
+          "write a book with all of your ideas to contextualize your story  ",
       },
       {
-        target: "#USET",
+        target: "#CONTENTT",
         title: "Traits & Relates",
         content:
           "Define emotions, morals, and character dynamics — make your story feel alive.",
       },
       {
-        target: "#USER",
+        target: "#CONTENTR",
         title: "Roles Section",
         content:
-          "Define your character relationships — who’s who in your story.",
+          "Define your character relationships — who’s who in your story."
+      },
+      {
+        target: ".boxstoryboard",
+        title: "StoryBoard",
+        content:
+          "Use this to build visuals and creative imagery for your storybook.",
       },
       {
         target: "body",
@@ -70,9 +79,15 @@ export default function StoryBoard() {
     }
   };
 
-  const startTour = () => {
+   const startTour = () => {
     setState((prev) => ({ ...prev, run: true }));
   };
+ 
+
+  useEffect(() => {
+    console.log(startTour)
+  })
+
 
   function Guidepage({ buttonId, onClose }) {
   // Define multi-step content for each section
@@ -282,7 +297,7 @@ export default function StoryBoard() {
           </div>
 
           {/* Imagine Design Section */}
-          <div className="boximagine">
+          <div className="boximagine" onClick={() => onsetguidepagetrigger("USEI")}>
             <h2
               className="boximagine"
               onClick={() => navigation("/imagedesign")}
